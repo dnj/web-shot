@@ -1,0 +1,19 @@
+@import "bootstrap-rtl";
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
+@import "fonts";
+body {
+	background: #fafafa;
+	direction: rtl;
+	text-align: right;
+	font-family: IRANSans;
+	font-size: 13px;
+}
+.ltr {
+	direction: ltr;
+	text-align: center;
+}
+@import "header";
+@import "sidebar";
+@import "file-list";
+@import "content-preview";

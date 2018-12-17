@@ -1,0 +1,19 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "indent": [true, "tabs", 4],
+        "variable-name": false,
+        "no-console": false,
+        "max-line-length": false,
+        "no-empty": false,
+        "object-literal-sort-keys": false,
+        "no-empty-interface": false,
+        "object-literal-shorthand": false,
+        "no-bitwise": false
+    },
+    "rulesDirectory": []
+}

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+		"module": "commonjs",
+   		"target": "es6",
+		"sourceMap": false,
+        "removeComments": true,
+        "outDir": "./dist"
+    },
+    "files": [
+        "src/Run.ts"
+    ]
+}

@@ -1,0 +1,127 @@
+.file-list {
+	width: calc(100% - #{$sidebar-width});
+	margin-right: $sidebar-width;
+	background: url(../imgs/file-list.jpg) repeat;
+	height: calc(100vh - 38px);
+	background-position-y: 38px;
+	> header {
+		background: #fff;
+		border-top: 1px solid #ededed;
+		border-bottom: 1px solid #ededed;
+		height: 38px;
+		position: relative;
+		overflow: hidden;
+		.path {
+
+			width: calc(100% - 420px);
+			float: left;
+			direction: ltr;
+			text-align: left;
+			padding-left: 15px;
+			padding-top: 8px;
+			> a{
+				color: #b4b4b4;
+				display: inline-block;
+				text-decoration: none;
+				&:after {
+					content: "\f105";
+					display: inline-block;
+					font-family: FontAwesome;
+					margin-left: 7px;
+					margin-right: 5px;
+					
+				}
+				&:last-child:after {
+					display: none;
+				}
+			}
+		}
+		.buttons {
+			width: 420px;
+			float: right;
+			color: rgb(51,51,51);
+			.btn {
+				background: transparent;
+				font-size: 13px;
+				padding-top:0.5rem;
+				padding-bottom:0.5rem;
+			}
+
+		}
+		&.no-bottom-border {
+			border-bottom: 0;
+		}
+	}
+	.table-files {
+		width: 100%;
+		resize:  none;
+		user-select: none;
+		thead {
+			background: #fff;
+			border-bottom: 1px solid #ededed;
+			tr {
+				height: 24px;
+			}
+			th {
+				padding-right: 10px;
+				border-right: 1px solid #ededed;
+				font-weight: normal;
+				padding-bottom: 3px;
+			}
+		}
+		tbody {
+			cursor: pointer;
+			tr {
+				height: 24px;
+			}
+			td {
+				padding-right: 10px;
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+			.dropdown {
+				> .dropdown-toggle {
+					visibility: hidden;
+					padding-top: 0;
+					padding-bottom: 0;
+					line-height: 1;
+					&:after {
+						display: none;
+					}
+				}
+			}
+			tr:hover {
+				.dropdown > .dropdown-toggle {
+					visibility: visible;
+				}
+			}
+		}
+	}
+	.icon {
+		background: url(../imgs/files-icons.png);
+		display: inline-block;
+		line-height: 24px;
+		vertical-align: middle;
+	}
+	.icon-folder {
+		background-position: -337px -717px;
+	}
+	.icon-image {
+		background-position: -336px -197px;
+	}
+	.icon-code {
+		background-position: -296px -77px;
+	}
+	.icon-24 {
+		width:24px;
+		height: 24px;
+	}
+
+	&.half {
+		width: calc((100% - #{$sidebar-width}) / 2);
+		float: right;
+		.half-hidden {
+			display: none;
+		}
+	}
+}
