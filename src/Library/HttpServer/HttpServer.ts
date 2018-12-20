@@ -63,12 +63,14 @@ export default class HttpServer {
 		}
 		this.options = options;
 	}
-	public run() {
+	public run(): Promise<void> {
 		this.cacheRules();
 		this.server = http.createServer((request, response) => {
 			this.handleRequest(request, response);
 		});
-		this.server.listen(this.options.port);
+		return new Promise((resolve) => {
+			this.server.listen(this.options.port, resolve);
+		});
 	}
 	public notFoundPage(): Promise<Buffer> {
 		return Promise.resolve(Buffer.from(`<html>
