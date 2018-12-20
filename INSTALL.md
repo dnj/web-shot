@@ -71,7 +71,7 @@ There is a number of options you can insert / modify on `options` table:
 * `puppeteer_new_page_timeout` timeout for creating a new tab on chrome. (Default: 10, 0 = No timeout)
 * `process_group` (string|int) new group of process after listen http server port.
 * `process_user` (string|int) new user of process after listen http server port.
-
+* `ssl` (object) a JSON string with `key` and `cert` file name parameters. Also you can use `port` (uint16) for non-standard port listening and `redirect` (default: true) cause client automaticlly redirected to https.
 # Compilation
 You need to compile server-side by running typescript compiler:
 ```
