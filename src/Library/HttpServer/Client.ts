@@ -25,8 +25,13 @@ export default class Client {
 		this.response.end(chunk);
 	}
 	// tslint:disable:ban-types
-	public sendView(view: Function) {
-		const obj: View = new (view.prototype.constructor)();
+	public sendView(view: Function | View) {
+		let obj: View;
+		if (view instanceof View) {
+			obj = view;
+		} else {
+			obj = new (view.prototype.constructor)();
+		}
 		obj.render().then((html) => {
 			this.response.writeHead(200, {"Content-Type": "text/html"});
 			this.response.end(html);

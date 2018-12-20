@@ -11,9 +11,9 @@ body {
 }
 .ltr {
 	direction: ltr;
-	text-align: center;
+	text-align: left;
 }
 @import "header";
-@import "sidebar";
-@import "file-list";
-@import "content-preview";
+@import "homePage";
+@import "docs";
+@import "footer";

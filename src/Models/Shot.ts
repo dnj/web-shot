@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as sharp from "sharp";
 import Model, {ColumnType} from "../Library/Database/Model";
 
 export enum Status {
@@ -99,6 +100,30 @@ export default class Shot extends Model {
 				resolve(exists);
 			});
 		});
+	}
+	public async resize(width: number, crop = 600): Promise<string> {
+		const path = this.getImagePath({width: width, height: crop});
+		const resizedExists = await this.isExist({width: width, height: crop});
+		if (!resizedExists) {
+			const resizer = sharp(this.getImagePath());
+			const metadata = await resizer.metadata();
+			if (crop < metadata.height) {
+				resizer.extract({
+					height: crop,
+					left: 0,
+					top: 0,
+					width: metadata.width,
+				});
+			}
+			(resizer as any).resize({width: width});
+			if (this.format === Format.JPG) {
+				resizer.jpeg();
+			} else {
+				resizer.png();
+			}
+			await resizer.toFile(path);
+		}
+		return path;
 	}
 	protected table() {
 		return "shots";

@@ -72,9 +72,10 @@ export default class Capture {
 		const data = validator.validate() as IData;
 		try {
 			const shot = await Capture.shoot(data);
-			const image = await Capture.doResize(shot, data);
+			const image = await shot.resize(data.width, data.crop);
 			client.sendFile(image);
 		} catch (e) {
+			console.error(e);
 			if (e instanceof TimeoutError) {
 				Capture.sendErrorMessage(client, ErrorType.TIMEOUT, data.format, data.width, data.crop);
 			} else if (e instanceof Error) {
@@ -154,30 +155,6 @@ export default class Capture {
 			await sleep(300);
 		}
 		throw new ServerError("Timeout for new page");
-	}
-	private static async doResize(shot: Shot, data: IData) {
-		const height = Math.min(shot.viewport_height, data.crop) * (data.width / shot.viewport_width);
-		const image = shot.getImagePath({width: data.width, height: height});
-		const resizedExists = await shot.isExist({width: data.width, height: height});
-		if (!resizedExists) {
-			const resizer = sharp(shot.getImagePath());
-			if (data.crop < shot.viewport_height) {
-				resizer.extract({
-					height: data.crop,
-					left: 0,
-					top: 0,
-					width: shot.viewport_width,
-				});
-			}
-			(resizer as any).resize({width: data.width});
-			if (shot.format === Format.JPG) {
-				resizer.jpeg();
-			} else {
-				resizer.png();
-			}
-			await resizer.toFile(image);
-		}
-		return image;
 	}
 	private static async sendErrorMessage(client: Client, type: ErrorType, format: "jpg" | "png", width?: number, height?: number) {
 		const image = await Jimp.read(width, height, 0xffffffff);

@@ -1,0 +1,28 @@
+section.contact-us {
+	.col-12 {
+		padding: 65px 0 35px 0;
+		margin-top: 25px;
+		border-top: 1px solid #eee;
+		ul {
+			list-style: none;
+			li {
+				padding: 15px 0;
+			}
+		}
+	}
+}
+footer {
+	background: #fff;
+	padding: 25px 0;
+	ul {
+		float: left;
+		li {
+			display: inline-block;
+		}
+	}
+	.copyright {
+		border-top: 1px solid #eee;
+		margin-top: 25px;
+		padding-top: 15px;
+	}
+}

@@ -1,0 +1,50 @@
+body.homepage {
+	.page-content {
+		background: #fff;
+		section {
+			&.header {
+				background: #ecf0f1;
+				padding-bottom: 35px;
+				margin-bottom: 65px;
+				h1 {
+					margin-top: 65px;
+				}
+				h6 {
+					margin-bottom: 35px;
+				}
+				input {
+					border-color: #007bff;
+				}
+				.shots {
+					.shot {
+						img {
+							background: url("../imgs/loading.gif");
+							background-size: cover;
+							color: transparent;
+							text-indent: 100%;
+							white-space: nowrap;
+							overflow: hidden;
+						}
+					}
+				}
+			}
+			&.docs {
+				color: #6c757d;
+				text-align: center;
+				pre {
+					direction: ltr;
+					display: block;
+					padding: 10px;
+					margin: 0 0 10.5px;
+					font-size: 14px;
+					word-break: break-all;
+					word-wrap: break-word;
+					color: #7b8a8b;
+					background-color: #ecf0f1;
+					border: 1px solid #ccc;
+					border-radius: 4px;
+				}
+			}
+		}
+	}
+}

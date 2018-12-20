@@ -4,7 +4,13 @@
   "description": "Free Website Screenshot Generator",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch:webpack": "webpack --progress -w",
+    "watch:ts": "tsc -w",
+    "build:webpack": "webpack --progress",
+    "build:ts": "tsc",
+    "run": "node dist/Run.js",
+    "watch": "npm run watch:webpack &; npm run watch:ts &",
+    "dev": "npm run run &\nnpm run watch:webpack &\n npm run watch:ts &"
   },
   "repository": {
     "type": "git",
@@ -13,20 +19,38 @@
   "author": "Amir.h Yeganemehr",
   "license": "ISC",
   "dependencies": {
+    "@types/bootstrap": "^4.1.4",
     "@types/ejs": "^2.6.0",
     "@types/mysql": "^2.15.5",
     "@types/puppeteer": "^1.10.1",
     "@types/sharp": "^0.21.0",
+    "bootstrap": "4",
+    "copy-webpack-plugin": "^4.6.0",
+    "css-loader": "^2.0.1",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "file-loader": "^2.0.0",
+    "font-awesome": "^4.7.0",
+    "html-loader": "^0.5.5",
     "jimp": "^0.6.0",
+    "jquery": "^3.3.1",
+    "mini-css-extract-plugin": "^0.5.0",
     "mysql": "^2.16.0",
+    "node-sass": "^4.11.0",
+    "postcss-loader": "^3.0.0",
+    "precss": "^4.0.0",
     "puppeteer": "^1.11.0",
+    "sass-loader": "^7.1.0",
     "sharp": "^0.21.1",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^5.3.1",
     "tslint": "^5.11.0",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.0",
+    "webpack-cli": "^3.1.2"
   },
   "devDependencies": {
+    "@types/jquery": "^3.3.28",
     "@types/node": "^10.12.12"
   }
 }
