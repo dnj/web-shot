@@ -6,6 +6,7 @@ import HttpServer from "./Library/HttpServer/HttpServer";
 
 export default class App {
 	public static async run() {
+		App.CWD();
 		App.runDB();
 		await App.loadConfig();
 		App.runBrowser();
@@ -27,7 +28,7 @@ export default class App {
 		App.databaseManager = new DatabaseManager({
 			host: "127.0.0.1",
 			username: "root",
-			password: "yeganemehr",
+			password: "jeyserver",
 			database: "web-shot",
 			charset: "utf8mb4",
 		});
@@ -50,5 +51,8 @@ export default class App {
 			App.config = new ConfigManager();
 		}
 		return App.config.preload();
+	}
+	private static CWD() {
+		process.chdir(__dirname);
 	}
 }
