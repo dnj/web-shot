@@ -2,7 +2,7 @@ import * as puppeteer from "puppeteer";
 import HttpRouting from "./HttpServer/Routing";
 import ConfigManager from "./Library/ConfigManager";
 import DatabaseManager from "./Library/Database/DatabaseManager";
-import HttpServer from "./Library/HttpServer/HttpServer";
+import HttpServer, { ISSLOptions } from "./Library/HttpServer/HttpServer";
 
 export default class App {
 	public static async run() {
@@ -35,9 +35,11 @@ export default class App {
 		});
 	}
 	private static async runHttpServer() {
+		const ssl = await App.getConfig().get("https") as ISSLOptions;
 		const server = new HttpServer(HttpRouting, {
 			port: await App.getConfig().get("http_port", 80) as number,
 			hostname: await App.getConfig().get("http_hostname") as string,
+			ssl: ssl,
 		});
 		await server.run();
 	}
