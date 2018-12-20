@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as http from "http";
+import * as https from "https";
 import * as path from "path";
 import ServerError from "../Exceptions/ServerError";
 import Client from "./Client";
@@ -37,16 +38,43 @@ export interface IRule {
 	path: Array<IRuleStaticPath | IRuleDynamicPath | IRuleWildcardPath | string> | string;
 	controller: Function;
 }
-
-export interface IOptions {
+export interface ISSLOptions {
+	/**
+	 * listening port for https connections
+	 * @default 443
+	 */
 	port?: number;
+	/**
+	 * Path to key file which saved in pem format
+	 */
+	key: string;
+	/**
+	 * Path to cert file which saved in pem format
+	 */
+	cert: string;
+	/**
+	 * redirect to https
+	 * @default true
+	 */
+	redirect?: boolean;
+}
+export interface IOptions {
+	/**
+	 * listening port for http connections
+	 * @default 80
+	 */
+	port?: number;
+	/**
+	 * listening hostname for http connections
+	 */
 	hostname?: string;
 	publicdirectory?: string;
-
+	ssl?: ISSLOptions;
 }
 export default class HttpServer {
 	private options: IOptions;
-	private server: http.Server;
+	private http: http.Server;
+	private https: https.Server;
 	private routes: ICachedRule[] = [];
 	public constructor(protected rules: IRule[], options?: IOptions) {
 		if (options === undefined) {
@@ -61,14 +89,24 @@ export default class HttpServer {
 		if (options.publicdirectory === undefined) {
 			options.publicdirectory = path.resolve(__dirname, "../../HttpServer/public");
 		}
+		if (options.ssl) {
+			if (!options.ssl.port) {
+				options.ssl.port = 443;
+			}
+			if (options.ssl.redirect === undefined) {
+				options.ssl.redirect = true;
+			}
+		}
 		this.options = options;
 	}
-	public run() {
+	public run(): Promise<void> {
 		this.cacheRules();
-		this.server = http.createServer((request, response) => {
-			this.handleRequest(request, response);
-		});
-		this.server.listen(this.options.port);
+		const promises: Array<Promise<void>> = [];
+		promises.push(this.runHttp());
+		if (this.options.ssl) {
+			promises.push(this.runHttps());
+		}
+		return Promise.all(promises) as any;
 	}
 	public notFoundPage(): Promise<Buffer> {
 		return Promise.resolve(Buffer.from(`<html>
@@ -87,15 +125,65 @@ export default class HttpServer {
 			});
 		});*/
 	}
-	private handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
+
+	private runHttp(): Promise<void> {
+		this.http = http.createServer((request, response) => {
+			this.handleRequest(request, response, false);
+		});
+		return new Promise((resolve) => {
+			this.http.listen(this.options.port, resolve);
+		});
+	}
+	private runHttps(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			fs.readFile(this.options.ssl.key, "utf8", (errKey, key) => {
+				if (errKey) {
+					return reject(errKey);
+				}
+				fs.readFile(this.options.ssl.cert, "utf8", (errCert, cert) => {
+					if (errCert) {
+						return reject(errCert);
+					}
+					this.https = https.createServer({
+						key: key,
+						cert: cert,
+					}, (request, response) => {
+						this.handleRequest(request, response, true);
+					});
+					this.https.listen(this.options.ssl.port, resolve);
+				});
+			});
+		});
+	}
+
+	private handleRequest(request: http.IncomingMessage, response: http.ServerResponse, isSSL: boolean) {
 		const client = new Client(this, request, response);
-		let mainHost = this.options.hostname;
-		if (this.options.port && this.options.port !== 80) {
-			mainHost += ":" + this.options.port;
-		}
-		if (client.host !== mainHost) {
-			client.sendNotFound();
-			return;
+		if (!isSSL) {
+			let mainHost = this.options.hostname;
+			if (this.options.port && this.options.port !== 80) {
+				mainHost += ":" + this.options.port;
+			}
+			if (client.host !== mainHost) {
+				client.sendNotFound();
+				return;
+			}
+			if (this.options.ssl && this.options.ssl.redirect && !request.url.startsWith("/.well-known/acme-challenge/")) {
+				let SSLMainHost = this.options.hostname;
+				if (this.options.ssl.port && this.options.ssl.port !== 443) {
+					SSLMainHost += ":" + this.options.ssl.port;
+				}
+				client.redirect(`https://${SSLMainHost}${request.url}`);
+				return;
+			}
+		} else if (this.options.ssl) {
+			let mainHost = this.options.hostname;
+			if (this.options.ssl.port && this.options.ssl.port !== 443) {
+				mainHost += ":" + this.options.ssl.port;
+			}
+			if (client.host !== mainHost) {
+				client.sendNotFound();
+				return;
+			}
 		}
 		const routing = this.route(client.url.pathname);
 		if (!routing) {

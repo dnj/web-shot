@@ -2,15 +2,16 @@ import * as puppeteer from "puppeteer";
 import HttpRouting from "./HttpServer/Routing";
 import ConfigManager from "./Library/ConfigManager";
 import DatabaseManager from "./Library/Database/DatabaseManager";
-import HttpServer from "./Library/HttpServer/HttpServer";
+import HttpServer, { ISSLOptions } from "./Library/HttpServer/HttpServer";
 
 export default class App {
 	public static async run() {
 		App.CWD();
 		App.runDB();
 		await App.loadConfig();
+		await App.runHttpServer();
+		await App.changeUserGroup();
 		App.runBrowser();
-		App.runHttpServer();
 	}
 	public static getDatabaseManager() {
 		return this.databaseManager;
@@ -27,18 +28,20 @@ export default class App {
 	private static runDB() {
 		App.databaseManager = new DatabaseManager({
 			host: "127.0.0.1",
-			username: "root",
-			password: "jeyserver",
-			database: "web-shot",
+			username: "YOUR_USER",
+			password: "PASSWORD",
+			database: "DATABASE_NAME",
 			charset: "utf8mb4",
 		});
 	}
 	private static async runHttpServer() {
+		const ssl = await App.getConfig().get("https") as ISSLOptions;
 		const server = new HttpServer(HttpRouting, {
 			port: await App.getConfig().get("http_port", 80) as number,
 			hostname: await App.getConfig().get("http_hostname") as string,
+			ssl: ssl,
 		});
-		server.run();
+		await server.run();
 	}
 	private static async runBrowser() {
 		App.browser = await puppeteer.launch({
@@ -51,6 +54,15 @@ export default class App {
 			App.config = new ConfigManager();
 		}
 		return App.config.preload();
+	}
+	private static async changeUserGroup() {
+		const options: string[] = await Promise.all([App.getConfig().get("process_user"), App.getConfig().get("process_group")]);
+		if (options[1] && process.getgid && process.setgid) {
+			process.setgid(options[1]);
+		}
+		if (options[0] && process.getuid && process.setuid) {
+			process.setuid(options[0]);
+		}
 	}
 	private static CWD() {
 		process.chdir(__dirname);

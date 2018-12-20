@@ -22,6 +22,11 @@ export default class HomePage {
 		view.hostname = client.host;
 		client.sendView(view);
 	}
+	public static ACMEChallenge(client: Client, data: {file: string}) {
+		return HomePage.assets(client, {
+			path: ".well-known/acme-challenge/" + data.file,
+		});
+	}
 	public static assets(client: Client, data: {path: string}) {
 		const fullPath = path.resolve(__dirname, "../public/assets/", data.path.replace(/\.\./, ""));
 		fs.exists(fullPath, (exists) => {

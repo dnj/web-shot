@@ -62,4 +62,10 @@ export default class Client {
 		this.response.writeHead(code || 200, {"Content-Type": "text/json"});
 		this.response.end(JSON.stringify(data));
 	}
+	public redirect(newURL: string, code: 301 | 302 = 302) {
+		this.response.writeHead(code, {
+			Location: newURL,
+		});
+		this.response.end();
+	}
 }

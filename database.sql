@@ -48,7 +48,10 @@ CREATE TABLE `shots` (
 INSERT INTO `options` (`name`, `value`, `autoload`) VALUES
 -- ('http_hostname', 'web-shot.ahy', 1),
 -- ('http_port', '808', 1),
---('puppeteer_args', '["--no-sandbox", "--disable-setuid-sandbox"]', 1),
+-- ('puppeteer_args', '["--no-sandbox", "--disable-setuid-sandbox"]', 1),
 -- ('puppeteer_headless', 'false', 1),
+-- ('process_group', 'web-shot', 1),
+-- ('process_user', 'web-shot', 1),
+-- ('ssl', '{"key": "../key.pem","cert": "../cert.pem"}', 1),
 ('puppeteer_max_pages', '20', 1),
 ('puppeteer_new_page_timeout', '10', 1);
