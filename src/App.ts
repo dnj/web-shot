@@ -6,6 +6,7 @@ import HttpServer from "./Library/HttpServer/HttpServer";
 
 export default class App {
 	public static async run() {
+		App.CWD();
 		App.runDB();
 		await App.loadConfig();
 		await App.runHttpServer();
@@ -60,5 +61,8 @@ export default class App {
 		if (options[0] && process.getuid && process.setuid) {
 			process.setuid(options[0]);
 		}
+	}
+	private static CWD() {
+		process.chdir(__dirname);
 	}
 }
