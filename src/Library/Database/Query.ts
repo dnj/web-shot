@@ -18,12 +18,15 @@ export interface IOrder {
 	column: string;
 	method: OrderType;
 }
+export type QueryOption = "ALL" | "DISTINCT" | "DISTINCTROW" | "HIGH_PRIORITY" | "STRAIGHT_JOIN" | "SQL_SMALL_RESULT" | "SQL_BIG_RESULT" | "SQL_BUFFER_RESULT" | "SQL_CACHE" | "SQL_NO_CACHE" | "SQL_CALC_FOUND_ROWS" | "LOW_PRIORITY" | "IGNORE" | "QUICK" | "MYSQLI_NESTJOIN" | "FOR UPDATE" | "LOCK IN SHARE MODE";
 export default class Query {
+	protected _options: QueryOption[] = [];
 	protected _where: Condition;
 	protected _having: Condition;
 	protected _joins: IJoin[] = [];
 	protected _orders: IOrder[] = [];
 	protected _groupby: string;
+	protected _totalCount: number;
 	public constructor() {
 		this._where = new Condition();
 		this._having = new Condition();
@@ -119,17 +122,45 @@ export default class Query {
 		this._groupby = column;
 		return this;
 	}
-	public raw(query: string|EscapedString): Promise<IRow[]> {
-		return new Promise((resolve, reject) => {
-			let str: string;
-			let values: Value[];
-			if (typeof query === "string") {
-				str = query;
-			} else {
-				str = query.string;
-				values = query.values;
+	public setQueryOption(option: QueryOption | QueryOption[]) {
+		if (typeof option === "string") {
+			option = [option];
+		}
+		for (const item of option) {
+			if (this._options.indexOf(item) === -1) {
+				this._options.push(item);
 			}
-			App.getDatabaseManager().query(str, values).then(resolve, reject);
+		}
+	}
+	public async raw(query: string | EscapedString): Promise<IRow[]> {
+		let str: string;
+		let values: Value[];
+		if (typeof query === "string") {
+			str = query;
+		} else {
+			str = query.string;
+			values = query.values;
+		}
+		const DBMS = App.getDatabaseManager();
+		if (str.indexOf("SQL_CALC_FOUND_ROWS") === -1) {
+			return DBMS.query(str, values);
+		}
+		const connection = await DBMS.getConnection();
+		return new Promise((resolve, reject) => {
+			connection.query(str, values, (err, rows) => {
+				if (err) {
+					connection.release();
+					return reject(err);
+				}
+				connection.query("SELECT FOUND_ROWS() as `totalCount`", (err2, tmpRows) => {
+					connection.release();
+					if (err2) {
+						return reject(err2);
+					}
+					this._totalCount = tmpRows[0].totalCount as number;
+					resolve(rows);
+				});
+			});
 		});
 	}
 	public get(table: string, limit?: Limit, columns?: string|string[]): Promise<IRow[]> {
@@ -140,7 +171,8 @@ export default class Query {
 		} else {
 			columns = "*";
 		}
-		const query = new EscapedString(`SELECT ${columns} FROM ${table}`);
+		const options = this._options.length ? this._options.join(" ") + " " : "";
+		const query = new EscapedString(`SELECT ${options}${columns} FROM ${table}`);
 		query.append(this.createJoins());
 		query.append(this.createWhere());
 		query.append(this.createGroupBy());
@@ -240,6 +272,12 @@ export default class Query {
 				});
 			}, reject);
 		});
+	}
+	public withTotalCount() {
+		this.setQueryOption("SQL_CALC_FOUND_ROWS");
+	}
+	public getTotalCount() {
+		return this._totalCount;
 	}
 	protected createJoins() {
 		let str = "";

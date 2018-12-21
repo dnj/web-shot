@@ -6,7 +6,7 @@ import EscapedString from "./EscapedString";
 import ICondition from "./ICondition";
 import IRow from "./IRow";
 import PrepareDataEvent from "./PrepareDataEvent";
-import Query, { IJoin, IOrder, JoinType, Limit, OrderType } from "./Query";
+import Query, { IJoin, IOrder, JoinType, Limit, OrderType, QueryOption } from "./Query";
 import Value from "./Value";
 
 export enum ColumnType {
@@ -80,9 +80,11 @@ abstract class Model extends Listenable {
 	protected _joins: IJoin[] = [];
 	protected _orders: IOrder[] = [];
 	protected _groupby: string;
+	protected _options: QueryOption[] = [];
 	protected _row: IRow = {};
 	protected _isNew = true;
 	protected _unsaveds: string[] = [];
+	protected _totalCount: number;
 	public constructor() {
 		super();
 		this._where = new Condition();
@@ -188,7 +190,9 @@ abstract class Model extends Listenable {
 	}
 	public get(limit?: Limit): Promise<this[]> {
 		return new Promise((resolve, reject) => {
-			this.getQueryFromThis().get(this.table(), limit, this.table() + ".*").then((rows) => {
+			const query = this.getQueryFromThis();
+			query.get(this.table(), limit, this.table() + ".*").then((rows) => {
+				this._totalCount = query.getTotalCount();
 				resolve(this.createModelsFromRow(rows));
 			}, reject);
 		});
@@ -315,6 +319,22 @@ abstract class Model extends Listenable {
 		}
 		return this;
 	}
+	public setQueryOption(option: QueryOption | QueryOption[]) {
+		if (typeof option === "string") {
+			option = [option];
+		}
+		for (const item of option) {
+			if (this._options.indexOf(item) === -1) {
+				this._options.push(item);
+			}
+		}
+	}
+	public withTotalCount() {
+		this.setQueryOption("SQL_CALC_FOUND_ROWS");
+	}
+	public getTotalCount() {
+		return this._totalCount;
+	}
 	protected abstract columns(): IColumn[];
 	protected abstract table(): string;
 	protected indexes(): IIndex[] {
@@ -390,6 +410,7 @@ abstract class Model extends Listenable {
 		if (this._having) {
 			query.havingAnd(this._having);
 		}
+		query.setQueryOption(this._options);
 		return query;
 	}
 	protected initRelations() {
