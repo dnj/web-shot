@@ -1,3 +1,4 @@
+import "bootstrap";
 import * as $ from "jquery";
 import Docs from "./Classes/Docs";
 import Gallery from "./Classes/Gallery";
