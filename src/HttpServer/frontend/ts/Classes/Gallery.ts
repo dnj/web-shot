@@ -36,7 +36,7 @@ export default class Gallery {
 					type: "get",
 					success: (data) => {
 						for (const shot of data.shots as IShot[]) {
-							$(".page-content .shots", Gallery.$body).append(`<a href="${shot.url}" class="shot" target="_blank">
+							$(".page-content .shots", Gallery.$body).append(`<a href="${shot.url}" class="shot" target="_blank" rel="nofollow">
 							<img class="img-fluid" src="${shot.path}" alt="Preview of ${shot.url}">
 						</a>`);
 						}

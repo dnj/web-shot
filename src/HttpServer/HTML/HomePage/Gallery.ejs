@@ -9,7 +9,7 @@
 	<div class="row">
 		<div class="shots col-12">
 		<? for (const shot of shots) { ?>
-			<a href="<?= shot.url ?>" class="shot" target="_blank">
+			<a href="<?= shot.url ?>" class="shot" target="_blank" rel="nofollow">
 				<img class="img-fluid" src="<?= shot.path ?>" alt="Preview of <?= shot.url ?>">
 			</a>
 		<? } ?>
