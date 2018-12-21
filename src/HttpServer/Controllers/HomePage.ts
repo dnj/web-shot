@@ -1,8 +1,15 @@
 import * as fs from "fs";
 import * as path from "path";
 import Client from "../../Library/HttpServer/Client";
+import InputValidation, { InputType } from "../../Library/InputValidation";
 import Docs from "../Views/HomePage/Docs";
+import Gallery from "../Views/HomePage/Gallery";
 import Index from "../Views/HomePage/Index";
+
+interface IData {
+	page: number;
+	ipp: number;
+}
 
 export default class HomePage {
 	public static storageShots(client: Client, data: {file: string}) {
@@ -14,12 +21,12 @@ export default class HomePage {
 	}
 	public static index(client: Client) {
 		const view = new Index();
-		view.hostname = client.host;
+		view.hostname = client.url.protocol + "//" + client.url.host;
 		client.sendView(view);
 	}
 	public static docs(client: Client) {
 		const view = new Docs();
-		view.hostname = client.host;
+		view.hostname = client.url.protocol + "//" + client.url.host;
 		client.sendView(view);
 	}
 	public static ACMEChallenge(client: Client, data: {file: string}) {
@@ -36,5 +43,25 @@ export default class HomePage {
 				client.sendNotFound();
 			}
 		});
+	}
+	public static async gallery(client: Client) {
+		const validator = new InputValidation({
+			page: {
+				type: InputType.Number,
+				min: 1,
+				default: 1,
+			},
+			ipp: {
+				type: InputType.Number,
+				min: 1,
+				max: 30,
+				default: 25,
+			},
+		}, client.url.query as any);
+		const data = validator.validate() as IData;
+		const view = new Gallery();
+		view.page = data.page;
+		view.ipp = data.ipp;
+		client.sendView(view);
 	}
 }

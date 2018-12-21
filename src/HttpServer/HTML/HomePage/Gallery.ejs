@@ -1,0 +1,19 @@
+<?- include("../header") ?>
+<div class="container">
+	<div class="header row">
+		<div class="col-md-10 offset-md-1 col-12">
+			<h1 class="page-title">گالری تصاویر</h1>
+			<p class="mt-1 mb-5">نگاهی به تصاویر web-shot.ir از <?= Math.min(shotsCount, 500) ?> وب سایت برتر نگاه کنید. رابط برنامه نویسی ما تصاویری با کیفیت بالا را دریافت می کند و آنها را بر روی یک زیرساخت شبکه نگهداری می کند تا در سریع ترین زمان آنها را تحویل دهد.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="shots col-12">
+		<? for (const shot of shots) { ?>
+			<a href="<?= shot.url ?>" class="shot" target="_blank">
+				<img class="img-fluid" src="<?= shot.path ?>" alt="Preview of <?= shot.url ?>">
+			</a>
+		<? } ?>
+		</div>
+	</div>
+</div>
+<?- include("../footer") ?>

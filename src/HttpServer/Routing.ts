@@ -9,4 +9,5 @@ export default [
 	{path: "/", controller: HomePage.index},
 	{path: "/capture", controller: Capture.request},
 	{path: "/docs", controller: HomePage.docs},
+	{path: "/gallery", controller: HomePage.gallery},
 ] as IRule[];

@@ -1,0 +1,25 @@
+body.gallery {
+	.page-content {
+		.header {
+			text-align: center;
+			.page-title {
+				margin-top: 65px;
+				margin-bottom: 35px;
+			}
+			p {
+				color: #6c757d;
+				margin-bottom: 35px;
+			}
+		}
+		.shots {
+			.shot {
+				display: inline-block;
+				img {
+					max-width: 107px;
+					max-height: 80px;
+					margin-left: 2px;
+				}
+			}
+		}
+	}
+}

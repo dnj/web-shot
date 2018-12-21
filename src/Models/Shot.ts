@@ -101,6 +101,12 @@ export default class Shot extends Model {
 			});
 		});
 	}
+	public paginate(page: number, pageLimit = 25) {
+		if (page <= 0) {
+			page = 1;
+		}
+		return this.get([(page - 1) * pageLimit, pageLimit]);
+	}
 	public async resize(width: number, crop = 600): Promise<string> {
 		const path = this.getImagePath({width: width, height: crop});
 		const resizedExists = await this.isExist({width: width, height: crop});
