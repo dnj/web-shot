@@ -156,9 +156,9 @@ export default class HttpServer {
 		});
 	}
 
-	private handleRequest(request: http.IncomingMessage, response: http.ServerResponse, isSSL: boolean) {
-		const client = new Client(this, request, response);
-		if (!isSSL) {
+	private handleRequest(request: http.IncomingMessage, response: http.ServerResponse, isHttps: boolean) {
+		const client = new Client(this, request, response, isHttps);
+		if (!isHttps) {
 			let mainHost = this.options.hostname;
 			if (this.options.port && this.options.port !== 80) {
 				mainHost += ":" + this.options.port;

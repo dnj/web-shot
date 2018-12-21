@@ -11,8 +11,7 @@ abstract class View {
 		return Promise.resolve();
 	}
 	public render(): Promise<string> {
-		return new Promise(async (resolve, reject) => {
-			await this.preLoad();
+		return new Promise((resolve, reject) => {
 			(ejs as any).delimiter = "?";
 			ejs.clearCache();
 			ejs.renderFile(this.getHTMLFile(), this, {context: this}, (err, html) => {

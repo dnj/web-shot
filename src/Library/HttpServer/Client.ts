@@ -10,10 +10,10 @@ export default class Client {
 	public host: string;
 	public path: string;
 	public url: url.UrlWithParsedQuery;
-	public constructor(private server: HttpServer, private request: http.IncomingMessage, private response: http.ServerResponse) {
+	public constructor(private server: HttpServer, private request: http.IncomingMessage, private response: http.ServerResponse, public isHttps: boolean) {
 		this.host = request.headers.host;
 		this.path = request.url;
-		this.url = url.parse(request.url, true);
+		this.url = url.parse((this.isHttps ? "https" : "http") + "://" + this.host + request.url, true);
 	}
 	public sendNotFound() {
 		this.server.notFoundPage().then((notfound) => {
@@ -25,21 +25,28 @@ export default class Client {
 		this.response.end(chunk);
 	}
 	// tslint:disable:ban-types
-	public sendView(view: Function | View) {
+	public async sendView(view: Function | View) {
 		let obj: View;
 		if (view instanceof View) {
 			obj = view;
 		} else {
 			obj = new (view.prototype.constructor)();
 		}
-		obj.render().then((html) => {
-			this.response.writeHead(200, {"Content-Type": "text/html"});
-			this.response.end(html);
-		}, (error) => {
-			console.error(error);
+		try {
+			await obj.preLoad();
+			if (typeof this.url.query.ajax === "string" && this.url.query.ajax === "1") {
+				const json = await obj.forAjax();
+				this.sendJSON(json);
+			} else {
+				const html = await obj.render();
+				this.response.writeHead(200, {"Content-Type": "text/html"});
+				this.response.end(html);
+			}
+		} catch (e) {
+			console.error(e);
 			this.response.writeHead(500, {"Content-Type": "text/html"});
 			this.response.end();
-		});
+		}
 	}
 	public sendStream(size: number, readableStream: stream.Readable, mimeType: string) {
 		this.response.writeHead(200, {"Content-Type": mimeType, "Content-Length": size});
