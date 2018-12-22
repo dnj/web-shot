@@ -27,7 +27,7 @@ export default class Gallery extends View {
 		this.shotsCount = model.getTotalCount();
 		const allresizes: Array<Promise<void>> = [];
 		for (const shot of shots) {
-			const promise = shot.resize(700, 1200).then((resized) => {
+			const promise = shot.resize(80, 1200).then((resized) => {
 				this.shots.push({
 					url: shot.url,
 					path: resized,
