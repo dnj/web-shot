@@ -16,15 +16,50 @@ export default class App {
 	public static getDatabaseManager() {
 		return this.databaseManager;
 	}
-	public static getBrowser() {
+	public static async getBrowser(): Promise<puppeteer.Browser> {
+		if (!App.browserIsLocked) {
+			return App.browser;
+		}
+		await new Promise<void>((resolve) => {
+			App.browserUnLockPromises.push({
+				resolve: resolve,
+				lock: false,
+			});
+		});
 		return this.browser;
 	}
 	public static getConfig() {
 		return this.config;
 	}
+	public static lockBrowser(): Promise<void> {
+		if (App.browserIsLocked) {
+			const promise = new Promise<void>((resolve) => {
+				App.browserUnLockPromises.push({
+					resolve: resolve,
+					lock: true,
+				});
+			});
+			return promise;
+		}
+		App.browserIsLocked = true;
+		return Promise.resolve();
+	}
+	public static releaseBrowser() {
+		App.browserIsLocked = false;
+		while (App.browserUnLockPromises.length) {
+			const item = App.browserUnLockPromises.shift();
+			item.resolve();
+			if (item.lock) {
+				App.browserIsLocked = true;
+				break;
+			}
+		}
+	}
 	private static databaseManager: DatabaseManager;
 	private static browser: puppeteer.Browser;
 	private static config: ConfigManager;
+	private static browserIsLocked = false;
+	private static browserUnLockPromises: Array<{resolve: () => void, lock: boolean}> = [];
 	private static runDB() {
 		App.databaseManager = new DatabaseManager({
 			host: "127.0.0.1",

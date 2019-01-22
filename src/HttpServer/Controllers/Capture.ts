@@ -114,14 +114,17 @@ export default class Capture {
 			const page = await Capture.newPage();
 			try {
 				await page.setViewport({width: data.viewportWidth, height: data.viewportHeight});
-				await page.goto(shot.url);
+				await page.goto(shot.url, {waitUntil: "networkidle2"});
 				const file = Shot.getImageStoragePath() + "/" + shot.id + "." + data.format;
+				await App.lockBrowser();
+				await page.bringToFront();
 				await page.screenshot({
 					path: file,
 					type: data.format === "png" ? "png" : "jpeg",
 					fullPage: data.fullPage === true,
 				});
 				page.close();
+				App.releaseBrowser();
 				shot.set("status", Status.Available);
 				shot.set("image", shot.id + "." + data.format);
 				shot.set("capture_at", Math.floor(Date.now() / 1000));
@@ -140,7 +143,7 @@ export default class Capture {
 			setTimeout(resolve, ms);
 		});
 		const config = App.getConfig();
-		const browser = App.getBrowser();
+		const browser = await App.getBrowser();
 		const maxPages = await config.get("puppeteer_max_pages", 20) as number;
 		if (!maxPages) {
 			return browser.newPage();
