@@ -158,12 +158,14 @@ export default class HttpServer {
 
 	private handleRequest(request: http.IncomingMessage, response: http.ServerResponse, isHttps: boolean) {
 		const client = new Client(this, request, response, isHttps);
+		const httpHostWithoutWWW = client.host.startsWith("www.") ? client.host.substr(4) : client.host;
 		if (!isHttps) {
 			let mainHost = this.options.hostname;
 			if (this.options.port && this.options.port !== 80) {
 				mainHost += ":" + this.options.port;
 			}
-			if (client.host !== mainHost) {
+			const mainHostWithoutWWW = mainHost.startsWith("www.") ? mainHost.substr(4) : mainHost;
+			if (httpHostWithoutWWW !== mainHostWithoutWWW) {
 				client.sendNotFound();
 				return;
 			}
@@ -174,15 +176,23 @@ export default class HttpServer {
 				}
 				client.redirect(`https://${SSLMainHost}${request.url}`);
 				return;
+			} else if ((!this.options.ssl || !this.options.ssl.redirect) && httpHostWithoutWWW !== mainHostWithoutWWW) {
+				client.redirect(`http://${mainHost}${request.url}`);
+				return;
+
 			}
 		} else if (this.options.ssl) {
 			let mainHost = this.options.hostname;
 			if (this.options.ssl.port && this.options.ssl.port !== 443) {
 				mainHost += ":" + this.options.ssl.port;
 			}
-			if (client.host !== mainHost) {
+			const mainHostWithoutWWW = mainHost.startsWith("www.") ? mainHost.substr(4) : mainHost;
+			if (httpHostWithoutWWW !== mainHostWithoutWWW) {
 				client.sendNotFound();
 				return;
+			}
+			if (httpHostWithoutWWW !== mainHostWithoutWWW) {
+				client.redirect(`https://${mainHost}${request.url}`);
 			}
 		}
 		const routing = this.route(client.url.pathname);
