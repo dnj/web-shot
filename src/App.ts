@@ -1,8 +1,10 @@
+import * as fs from "fs";
 import * as puppeteer from "puppeteer";
 import HttpRouting from "./HttpServer/Routing";
 import ConfigManager from "./Library/ConfigManager";
 import DatabaseManager from "./Library/Database/DatabaseManager";
 import HttpServer, { ISSLOptions } from "./Library/HttpServer/HttpServer";
+import Shot from "./Models/Shot";
 
 export default class App {
 	public static async run() {
@@ -11,7 +13,8 @@ export default class App {
 		await App.loadConfig();
 		await App.runHttpServer();
 		await App.changeUserGroup();
-		App.runBrowser();
+		App.removeOldShotsInterval();
+		// App.runBrowser();
 	}
 	public static getDatabaseManager() {
 		return this.databaseManager;
@@ -101,5 +104,54 @@ export default class App {
 	}
 	private static CWD() {
 		process.chdir(__dirname);
+	}
+	private static removeOldShotsInterval() {
+		setInterval(App.removeOldShots, 3600 * 1000);
+		App.removeOldShots();
+	}
+	private static removeOldShots() {
+		return new Promise((resolve, reject) => {
+			const promises: Array<Promise<void>> = [];
+			App.getConfig().get("oldshots", {}).then(async (option) => {
+				if (option.maxAge === undefined) {
+					option.maxAge = 86400 * 2;
+				}
+				if (option.maxAge === 0) {
+					return resolve();
+				}
+				const model = new Shot();
+				model.where("create_at", Math.floor(Date.now() / 1000) - option.maxAge, "<");
+				const shots = await model.get();
+				if (shots.length === 0) {
+					return resolve();
+				}
+				const storage = Shot.getImageStoragePath();
+				fs.readdir(storage, (err, items) => {
+					if (err) {
+						return reject(err);
+					}
+					for (const item of items) {
+						for (let x = 0; x < shots.length; x++) {
+							const shot = shots[x];
+							if (item.startsWith(shot.id + ".") || item.startsWith(shot.id + "-")) {
+								fs.unlink(storage + "/" + item, (errUnlink) => {
+									if (errUnlink) {
+										console.error("error in deleting " + storage + "/" + item, errUnlink);
+									}
+								});
+								promises.push(shot.delete());
+								shots[x] = undefined;
+							}
+						}
+					}
+					for (const shot of shots) {
+						if (shot) {
+							promises.push(shot.delete());
+						}
+					}
+					Promise.all(promises).then(resolve, reject);
+				});
+			}, reject);
+		});
 	}
 }
