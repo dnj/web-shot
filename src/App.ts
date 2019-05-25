@@ -14,7 +14,7 @@ export default class App {
 		await App.runHttpServer();
 		await App.changeUserGroup();
 		App.removeOldShotsInterval();
-		// App.runBrowser();
+		App.runBrowser();
 	}
 	public static getDatabaseManager() {
 		return this.databaseManager;
@@ -105,53 +105,89 @@ export default class App {
 	private static CWD() {
 		process.chdir(__dirname);
 	}
-	private static removeOldShotsInterval() {
+	private static async removeOldShotsInterval() {
 		setInterval(App.removeOldShots, 3600 * 1000);
-		App.removeOldShots();
+		setInterval(App.removeOrphanShots, 3600 * 2000);
+		await App.removeOldShots();
+		await App.removeOrphanShots();
 	}
-	private static removeOldShots() {
-		return new Promise((resolve, reject) => {
-			const promises: Array<Promise<void>> = [];
-			App.getConfig().get("oldshots", {}).then(async (option) => {
-				if (option.maxAge === undefined) {
-					option.maxAge = 86400 * 2;
-				}
-				if (option.maxAge === 0) {
-					return resolve();
-				}
-				const model = new Shot();
-				model.where("create_at", Math.floor(Date.now() / 1000) - option.maxAge, "<");
-				const shots = await model.get();
-				if (shots.length === 0) {
-					return resolve();
-				}
-				const storage = Shot.getImageStoragePath();
-				fs.readdir(storage, (err, items) => {
+	private static async removeOldShots() {
+		const readDir = (dir: string): Promise<string[]> => {
+			return new Promise((resolve, reject) => {
+				fs.readdir(dir, (err, items) => {
 					if (err) {
 						return reject(err);
 					}
-					for (const item of items) {
-						for (let x = 0; x < shots.length; x++) {
-							const shot = shots[x];
-							if (item.startsWith(shot.id + ".") || item.startsWith(shot.id + "-")) {
-								fs.unlink(storage + "/" + item, (errUnlink) => {
-									if (errUnlink) {
-										console.error("error in deleting " + storage + "/" + item, errUnlink);
-									}
-								});
-								promises.push(shot.delete());
-								shots[x] = undefined;
-							}
-						}
-					}
-					for (const shot of shots) {
-						if (shot) {
-							promises.push(shot.delete());
-						}
-					}
-					Promise.all(promises).then(resolve, reject);
+					resolve(items);
 				});
-			}, reject);
+			});
+		};
+		const unlink = (file: string): Promise<void> => {
+			return new Promise((resolve, reject) => {
+				fs.unlink(file, (err) => {
+					if (err) {
+						return reject(err);
+					}
+					resolve();
+				});
+			});
+		};
+		const option = await App.getConfig().get("oldshots", {});
+		if (option.maxAge === undefined) {
+			option.maxAge = 86400 * 2;
+		}
+		if (option.maxAge === 0) {
+			return;
+		}
+		const model = new Shot();
+		model.where("create_at", Math.floor(Date.now() / 1000) - option.maxAge, "<");
+		const shots = await model.get(1000);
+		if (shots.length === 0) {
+			return;
+		}
+		const storage = Shot.getImageStoragePath();
+		const items = await readDir(storage);
+		for (const shot of shots) {
+			for (const item of items) {
+				if (item.startsWith(shot.id + ".") || item.startsWith(shot.id + "-")) {
+					unlink(storage + "/" + item);
+					break;
+				}
+			}
+			await shot.delete();
+		}
+	}
+	private static removeOrphanShots() {
+		const storage = Shot.getImageStoragePath();
+		const checkAndRemoveShot = (id: string, item: string): Promise<void> => {
+			return new Promise((resolve, reject) => {
+				(new Shot()).where("id", id).has().then((shot) => {
+					if (!shot) {
+						fs.unlink(storage + "/" + item, (err) => {
+							if (err) {
+								console.error("error in deleting " + storage + "/" + item, err);
+								return reject(err);
+							}
+							resolve();
+						});
+					}
+				}, reject);
+			});
+		};
+		return new Promise((resolve, reject) => {
+			fs.readdir(storage, async (err, items) => {
+				if (err) {
+					return reject(err);
+				}
+				for (const item of items.slice(0, 1000)) {
+					const matches = item.match(/^(\d+).*.(?:jpg|png|gif)$/i);
+					if (!matches.length) {
+						continue;
+					}
+					await checkAndRemoveShot(matches[1], item);
+				}
+			});
+			resolve();
 		});
 	}
 }
