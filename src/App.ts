@@ -124,12 +124,16 @@ export default class App {
 		};
 		const unlink = (file: string): Promise<void> => {
 			return new Promise((resolve, reject) => {
-				fs.unlink(file, (err) => {
-					if (err) {
-						return reject(err);
-					}
+				if (fs.existsSync(file)) {
+					fs.unlink(file, (err) => {
+						if (err) {
+							return reject(err);
+						}
+						resolve();
+					});
+				} else {
 					resolve();
-				});
+				}
 			});
 		};
 		const option = await App.getConfig().get("oldshots", {});
@@ -162,7 +166,7 @@ export default class App {
 		const checkAndRemoveShot = (id: string, item: string): Promise<void> => {
 			return new Promise((resolve, reject) => {
 				(new Shot()).where("id", id).has().then((shot) => {
-					if (!shot) {
+					if (!shot && fs.existsSync(storage + "/" + item)) {
 						fs.unlink(storage + "/" + item, (err) => {
 							if (err) {
 								console.error("error in deleting " + storage + "/" + item, err);
@@ -174,7 +178,7 @@ export default class App {
 				}, reject);
 			});
 		};
-		return new Promise((resolve, reject) => {
+		return new Promise<void>((resolve, reject) => {
 			fs.readdir(storage, async (err, items) => {
 				if (err) {
 					return reject(err);
