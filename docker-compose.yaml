@@ -11,9 +11,9 @@ services:
       MYSQL_USER: ${WEBSHOT_DB_USERNAME}
       MYSQL_PASSWORD: ${WEBSHOT_DB_PASSWORD}
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 5s
-      retries: 10
+      test: mysqladmin ping --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 3s
+      retries: 15
     volumes:
       - mysql-data:/var/lib/mysql
       - ./.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
@@ -33,6 +33,8 @@ services:
       WEBSHOT_CERTBOT_EMAIL: ${WEBSHOT_CERTBOT_EMAIL}
       WEBSHOT_SSL_PORT: ${WEBSHOT_SSL_PORT}
       WEBSHOT_SSL_REDIRECT: ${WEBSHOT_SSL_REDIRECT}
+    security_opt:
+      - seccomp:./.docker/webshot/chromium.json
     volumes:
       - webshot-storage:/home/webshot/dist/storage/
     depends_on:
