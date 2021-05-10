@@ -4,24 +4,24 @@ echo "Start certbot bash";
 
 webshotIsReady=0
 wait_for_webshot() {
-		i=1
-        while true; do
-				if [[ "$i" -gt 300 ]]; then
-					break;
-				fi
-				i=$((i+1))
-                echo "certbot: ($i) check webshot PID file ( $1 ) is exists?";
-                if [ -f $1 ]; then
-                        webshotPID=$(cat "$1");
-                        echo "is exists, file content: $webshotPID , check process running with this PID?";
-                        if [ -n "$webshotPID" -a -e /proc/$webshotPID ]; then
-                                echo "webshot is running with PID: $webshotPID ";
-								webshotIsReady=1
-                                break;
-                        fi
-                fi
-                sleep 1
-        done
+	i=1
+	while true; do
+			if [[ "$i" -gt 300 ]]; then
+				break;
+			fi
+			i=$((i+1))
+			echo "certbot: ($i) check webshot PID file ( $1 ) is exists?";
+			if [ -f $1 ]; then
+					webshotPID=$(cat "$1");
+					echo "is exists, file content: $webshotPID , check process running with this PID?";
+					if [ -n "$webshotPID" -a -e /proc/$webshotPID ]; then
+							echo "webshot is running with PID: $webshotPID ";
+							webshotIsReady=1
+							break;
+					fi
+			fi
+			sleep 1
+	done
 }
 
 wait_for_webshot "/run/webshot/webshot.pid";
@@ -48,10 +48,7 @@ else
         if [ "$webshotIsReady" = "1" ]
 		then
 			echo "RENEW CERTBOT";
-			# certbot renew
-			echo >> /home/webshot/.env
-			echo "WEBSHOT_SSL_CERT_PATH=mashgholam" >> /home/webshot/.env
-			echo "WEBSHOT_SSL_KEY_PATH=mashgholam" >> /home/webshot/.env
+			certbot renew
 			node /home/webshot/dist/Run.js reload
 		else
 			echo "It seems webshot is not ready, so we can not renew SSL of it";
@@ -60,4 +57,3 @@ else
         exec "$@"
     fi
 fi
-
