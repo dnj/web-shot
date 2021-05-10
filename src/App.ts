@@ -249,7 +249,24 @@ export default class App {
 		await App.httpServer.run();
 	}
 	private static async runBrowser() {
+		/**
+		 * we should filter env variables that puppeteer sees
+		 * Because by default it sees all process.env and it's not good to expose information like DB, ...
+		 * @see https://github.com/puppeteer/puppeteer/blob/v9.1.1/docs/api.md#puppeteerlaunchoptions
+		 */
+		const secretENVs = [
+			"WEBSHOT_DB_HOST", "WEBSHOT_DB_USERNAME", "WEBSHOT_DB_NAME", "WEBSHOT_DB_PASSWORD", "WEBSHOT_MYSQL_ROOT_PASSWORD",
+			"WEBSHOT_CERTBOT_EMAIL", "WEBSHOT_SSL_CERT_PATH", "WEBSHOT_SSL_KEY_PATH",
+			"WEBSHOT_HOSTNAME", "WEBSHOT_PORT", "WEBSHOT_SSL_PORT",
+		];
+		const puppeteerENV: {[name: string]: string} = {};
+		for (const key in process.env) {
+			if (secretENVs.indexOf(key) === -1) {
+				puppeteerENV[key] = process.env[key];
+			}
+		}
 		App.browser = await puppeteer.launch({
+			env: puppeteerENV,
 			args: await App.getConfig().get("puppeteer_args") as string[],
 			headless: await App.getConfig().get("puppeteer_headless", true) as boolean,
 		});
