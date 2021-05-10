@@ -35,8 +35,7 @@ if [ "$1" = 'run' ]; then
 		echo >> /home/webshot/.env
 		echo "WEBSHOT_SSL_CERT_PATH=/etc/letsencrypt/live/$WEBSHOT_HOSTNAME/fullchain.pem" >> /home/webshot/.env
 		echo "WEBSHOT_SSL_KEY_PATH=/etc/letsencrypt/live/$WEBSHOT_HOSTNAME/privkey.pem" >> /home/webshot/.env
-		echo "0 3 * * * /docker-entrypoint.d/certbot.sh renew 2>&1" > /etc/cron.d/certbot-daily-cron;
-		crontab /etc/cron.d/certbot-daily-cron;
+		(crontab -l 2>/dev/null; echo "0 0 * * * /docker-entrypoint.d/certbot.sh renew") | crontab -;
 		echo "Reload webshot";
 		node /home/webshot/dist/Run.js reload
 	else
