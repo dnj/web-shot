@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as dotenv from "dotenv";
+import * as path from "path";
 import * as puppeteer from "puppeteer";
 import HttpRouting from "./HttpServer/Routing";
 import ConfigManager from "./Library/ConfigManager";
@@ -31,15 +32,28 @@ export default class App {
 		await App.loadConfig();
 		await App.runHttpServer();
 		await App.changeUserGroup();
+		await App.runBrowser();
 		App.removeOldShotsInterval();
-		App.runBrowser();
 	}
-	public static reload() {
+	public static async reload() {
+		App.initDotENV();
+		/** save ssl cert and key path to DB if gotted from env */
+		const sslDB = await App.getConfig().get("https") as ISSLOptions;
+		if (!sslDB && (process.env.WEBSHOT_SSL_CERT_PATH && process.env.WEBSHOT_SSL_KEY_PATH)) {
+			try {
+				if (fs.existsSync(process.env.WEBSHOT_SSL_CERT_PATH) && process.env.WEBSHOT_SSL_KEY_PATH) {
+					App.getConfig().set("https", {
+						cert: process.env.WEBSHOT_SSL_CERT_PATH,
+						key: process.env.WEBSHOT_SSL_KEY_PATH,
+					});
+				}
+			} catch (err) {}
+		}
 		App.config.clearCache();
 		App.config.preload();
 		if (App.httpServer) {
-			App.httpServer.stop();
-			App.httpServer.run();
+			await App.httpServer.stop();
+			await App.runHttpServer();
 		}
 	}
 	public static sendReloadSignal() {
@@ -116,13 +130,21 @@ export default class App {
 		return false;
 	}
 	protected static listenForSignals() {
-		process.on("SIGTERM", () => {
-			console.log("webshot: got SIGTERM signal.");
+		const exitHandler = () => {
+			/** no need to close browser, puppeteer handler itself */
 			if (App.databaseManager) {
 				App.databaseManager.close();
 			}
 			App.removePID();
 			process.exit();
+		};
+		process.on("SIGINT", () => {
+			console.log("webshot: got SIGINT signal.");
+			exitHandler();
+		});
+		process.on("SIGTERM", () => {
+			console.log("webshot: got SIGTERM signal.");
+			exitHandler();
 		});
 		process.on("SIGHUP", () => {
 			console.log("webshot: got SIGHUP signal, reload 'webshot' deamon.");
@@ -138,26 +160,49 @@ export default class App {
 		return null;
 	}
 	private static savePID() {
-		fs.writeFileSync(App.PID_FILE, process.pid);
+		const dir = path.dirname(App.PID_FILE);
+		try {
+			if (!fs.existsSync(dir)) {
+				fs.mkdirSync(dir);
+			}
+			fs.writeFileSync(App.PID_FILE, process.pid.toString(), {
+				flag: "w"
+			});
+		} catch (err) {
+			console.log(`webshot: can not save pid in ${App.PID_FILE}, error:`, err);
+		}
 	}
 	private static removePID() {
 		if (fs.existsSync(App.PID_FILE)) {
-			fs.unlink(App.PID_FILE, (err) => {
-				console.error(`webshot: can not remove PID file located in: '${App.PID_FILE}'`);
-			});
+			try {
+				fs.unlinkSync(App.PID_FILE);
+			} catch (err) {
+				console.error(`webshot: can not remove PID file located in: '${App.PID_FILE}', Error:\n`, err);
+			}
 		}
 	}
-	private static readonly PID_FILE = "/run/web-shot.pid";
+
+	private static readonly PID_FILE = "/run/webshot/webshot.pid";
 	private static databaseManager: DatabaseManager;
 	private static httpServer: HttpServer;
 	private static browser: puppeteer.Browser;
 	private static config: ConfigManager;
 	private static browserIsLocked = false;
 	private static browserUnLockPromises: Array<{resolve: () => void, lock: boolean}> = [];
+
 	private static initDotENV() {
-		dotenv.config({
-			path: "../.env",
-		});
+		const env = path.resolve(__dirname, "../.env");
+		if (fs.existsSync(env)) {
+			const content = fs.readFileSync(env, {
+				encoding: "UTF8",
+			});
+			const envConfig = dotenv.parse(content);
+			for (const key in envConfig) {
+				if (envConfig[key] !== undefined) {
+					process.env[key] = envConfig[key];
+				}
+			}
+		}
 	}
 	private static runDB() {
 		App.databaseManager = new DatabaseManager({
@@ -183,10 +228,21 @@ export default class App {
 			redirect: [1, "1", "true", "yes", "on"].indexOf(process.env.WEBSHOT_SSL_REDIRECT) > -1,
 		} : await App.getConfig().get("https") as ISSLOptions;
 
+		let shouldUseSSL: boolean = true;
+		if (ssl && ssl.cert && ssl.key) {
+			try {
+				if (!fs.existsSync(ssl.cert) || !fs.existsSync(ssl.key)) {
+					shouldUseSSL = false;
+				}
+			} catch (err) {
+				shouldUseSSL = false;
+			}
+		}
+
 		const config = {
 			port: port,
 			hostname: hostname,
-			ssl: ssl,
+			ssl: shouldUseSSL ? ssl : undefined,
 		};
 		console.log("App::runHttpServer", config);
 		App.httpServer = new HttpServer(HttpRouting, config);

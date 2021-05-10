@@ -27,6 +27,7 @@
     "bootstrap": "4",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.0.1",
+    "dotenv": "^9.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "file-loader": "^2.0.0",
