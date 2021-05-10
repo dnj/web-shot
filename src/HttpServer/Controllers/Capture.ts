@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as Jimp from "jimp";
-import {TimeoutError} from "puppeteer/Errors";
-import * as sharp from "sharp";
+import * as puppeteer from "puppeteer";
 import App from "../../App";
 import ServerError from "../../Library/Exceptions/ServerError";
 import Client from "../../Library/HttpServer/Client";
@@ -77,7 +76,7 @@ export default class Capture {
 			client.sendFile(image);
 		} catch (e) {
 			console.error(e);
-			if (e instanceof TimeoutError) {
+			if (e instanceof puppeteer.errors.TimeoutError) {
 				Capture.sendErrorMessage(client, ErrorType.TIMEOUT, data.format, data.width, data.crop);
 			} else if (e instanceof Error) {
 				if (e.message.indexOf("net::ERR_NAME_NOT_RESOLVED") !== -1) {
