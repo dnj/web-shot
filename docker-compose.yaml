@@ -10,16 +10,13 @@ services:
       MYSQL_DATABASE: ${WEBSHOT_DB_NAME}
       MYSQL_USER: ${WEBSHOT_DB_USERNAME}
       MYSQL_PASSWORD: ${WEBSHOT_DB_PASSWORD}
-    healthcheck:
-      test: mysqladmin ping --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD
-      timeout: 3s
-      retries: 15
     volumes:
       - mysql-data:/var/lib/mysql
       - ./.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
 
   web-shot:
     image: ${WEBSHOT_IMAGE}
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -38,8 +35,7 @@ services:
     volumes:
       - webshot-storage:/home/webshot/dist/storage/
     depends_on:
-      mysql-server:
-        condition: service_healthy
+      - mysql-server
 
 volumes: 
   certbot-certs:

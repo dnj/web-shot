@@ -6,7 +6,7 @@ webshotIsReady=0
 wait_for_webshot() {
 	i=1
 	while true; do
-			if [[ "$i" -gt 300 ]]; then
+			if [[ "$i" -gt 30 ]]; then
 				break;
 			fi
 			i=$((i+1))
@@ -30,6 +30,7 @@ if [ "$1" = 'run' ]; then
 	if [ "$webshotIsReady" = "1" ]
 	then
 	    echo "RUN CERTBOT";
+		sleep 5;
 		mkdir -p /home/webshot/dist/HttpServer/public/assets;
 		certbot certonly --non-interactive -v --agree-tos --email "$WEBSHOT_CERTBOT_EMAIL" --webroot --webroot-path /home/webshot/dist/HttpServer/public/assets -d "$WEBSHOT_HOSTNAME"
 		echo >> /home/webshot/.env
