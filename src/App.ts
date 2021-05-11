@@ -264,11 +264,19 @@ export default class App {
 				puppeteerENV[key] = process.env[key];
 			}
 		}
-		App.browser = await puppeteer.launch({
-			env: puppeteerENV,
-			args: await App.getConfig().get("puppeteer_args") as string[],
-			headless: await App.getConfig().get("puppeteer_headless", true) as boolean,
-		});
+		const setupBrowser = async () => {
+			console.log("webshot: setupBrowser");
+			App.browser = await puppeteer.launch({
+				env: puppeteerENV,
+				args: await App.getConfig().get("puppeteer_args") as string[],
+				headless: await App.getConfig().get("puppeteer_headless", true) as boolean,
+			});
+			App.browser.on("disconnected", () => {
+				console.log("webshot: App.browser disconnected, try reconnect");
+				setupBrowser();
+			});
+		};
+		setupBrowser();
 	}
 	private static loadConfig() {
 		if (!App.config) {
