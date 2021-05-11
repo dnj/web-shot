@@ -1,6 +1,6 @@
 CREATE TABLE `options` (
 	`name` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-	`value` text,
+	`value` text DEFAULT NULL,
 	`autoload` tinyint(1) NOT NULL,
 	PRIMARY KEY (`name`),
 	KEY `autoload` (`autoload`)
@@ -35,13 +35,13 @@ CREATE TABLE `shots` (
 	`capture_at` int(10) unsigned DEFAULT NULL,
 	`url` varchar(535) NOT NULL,
 	`format` tinyint(4) NOT NULL,
-	`full_page` tinyint(1) NOT NULL,
+	`full_page` tinyint(1) NOT NULL DEFAULT 0,
 	`viewport_width` smallint(5) unsigned NOT NULL,
 	`viewport_height` smallint(5) unsigned NOT NULL,
 	`image` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
 	`status` tinyint(4) NOT NULL,
 	PRIMARY KEY (`id`),
-	KEY `url` (`url`)
+	KEY `url` (`url`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
