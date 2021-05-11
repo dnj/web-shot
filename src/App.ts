@@ -244,7 +244,6 @@ export default class App {
 			hostname: hostname,
 			ssl: shouldUseSSL ? ssl : undefined,
 		};
-		console.log("App::runHttpServer", config);
 		App.httpServer = new HttpServer(HttpRouting, config);
 		await App.httpServer.run();
 	}
