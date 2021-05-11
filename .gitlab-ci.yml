@@ -1,9 +1,6 @@
 stages:
   - build
 
-variables:
-  REPO_SERVER_HOST: ${CI_SERVER_PROTOCOL}://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}:${CI_SERVER_PORT}
-
 build docker image:
   image: docker:20.10
   services:
@@ -11,11 +8,8 @@ build docker image:
   stage: build
   variables:
     DOCKER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-    GIT_ROOT_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_NAME
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_NAME
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - cd $GIT_ROOT_PATH
     - docker build -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
