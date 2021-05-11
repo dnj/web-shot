@@ -16,19 +16,9 @@ RUN groupadd --gid 1001 webshot \
 
 RUN echo 'kernel.unprivileged_userns_clone=1' > /etc/sysctl.d/userns.conf
 
-COPY ./src /home/webshot/src
-COPY ./package*.json /home/webshot/
-COPY ./ts*.json /home/webshot/
-COPY ./webpack.config.js /home/webshot
-
+COPY . /home/webshot
 COPY ./.docker/webshot/docker-entrypoint.sh /docker-entrypoint.sh
 COPY ./.docker/webshot/docker-entrypoint.d/ /docker-entrypoint.d/
-
-WORKDIR /home/webshot
-
-RUN npm install
-RUN npm run build:ts
-RUN npm run build:webpack
 
 RUN mkdir -p \
 		/home/webshot/dist/storage \
@@ -43,8 +33,15 @@ RUN mkdir -p \
     && chown -R webshot:webshot /var/log/letsencrypt/ \
 	&& chown -R webshot:webshot /var/lib/letsencrypt
 
-EXPOSE 80 443
+WORKDIR /home/webshot
 
 USER webshot
+
+RUN npm install \
+    && npm run build:ts \
+    && npm run build:webpack
+
+EXPOSE 80 443
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD [ "run" ]
