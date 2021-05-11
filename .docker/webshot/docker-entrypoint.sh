@@ -1,14 +1,12 @@
 #!/bin/bash
 
-printf "$(whoami)\n"
-
 # turn on job control
 set -m
 
 if [ "$1" = 'run' ]; then
 
 	echo "check the env 'WEBSHOT_CERTBOT_RUN' is exists?";
-	if [[ ! -z "$WEBSHOT_CERTBOT_RUN" ]]; then
+	if [ -n "$WEBSHOT_CERTBOT_RUN" ]; then
 		echo "is exists! so we should issue SSL";
 
 		echo "start the webshot process and put it in the background";
