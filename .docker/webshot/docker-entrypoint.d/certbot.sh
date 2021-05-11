@@ -32,7 +32,7 @@ if [ "$1" = 'run' ]; then
 	    echo "RUN CERTBOT";
 		sleep 5;
 		mkdir -p /home/webshot/dist/HttpServer/public/assets;
-		certbot certonly --non-interactive -v --agree-tos --email "$WEBSHOT_CERTBOT_EMAIL" --webroot --webroot-path /home/webshot/dist/HttpServer/public/assets -d "$WEBSHOT_HOSTNAME"
+		certbot certonly --non-interactive --agree-tos --email "$WEBSHOT_CERTBOT_EMAIL" --webroot --webroot-path /home/webshot/dist/HttpServer/public/assets -d "$WEBSHOT_HOSTNAME"
 		echo >> /home/webshot/.env
 		echo "WEBSHOT_SSL_CERT_PATH=/etc/letsencrypt/live/$WEBSHOT_HOSTNAME/fullchain.pem" >> /home/webshot/.env
 		echo "WEBSHOT_SSL_KEY_PATH=/etc/letsencrypt/live/$WEBSHOT_HOSTNAME/privkey.pem" >> /home/webshot/.env
