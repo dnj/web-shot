@@ -1,15 +1,18 @@
 const path = require("path");
 const precss = require("precss");
 const autoprefixer = require("autoprefixer");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
-	mode: 'development',
+	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 	entry: [
 		'./src/HttpServer/frontend/ts/Main.ts',
 		'./src/HttpServer/frontend/scss/main.scss',
 	],
+	devtool: false,
 	module: {
 		rules: [
 			{
@@ -47,6 +50,19 @@ module.exports = {
 	resolve: {
 		extensions: [ '.tsx', '.ts', '.js', '.scss', '.css' ]
 	},
+	optimization: {
+		minimizer: [
+			new TerserPlugin({
+				terserOptions: {
+					output: {
+						comments: false,
+					},
+				},
+				extractComments: false,
+			}),
+			new OptimizeCSSAssetsPlugin({}),
+		],
+	},
 	plugins: [
 		new MiniCssExtractPlugin({
 			filename: 'main.css',
@@ -61,3 +77,4 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist/HttpServer/public/assets')
 	}
 };
+
