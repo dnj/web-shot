@@ -53,7 +53,7 @@ export default class Client {
 		readableStream.pipe(this.response);
 	}
 	public sendFile(path: string) {
-		return new Promise((resolve, reject) => {
+		return new Promise<void>((resolve, reject) => {
 			const contentType = mime.getType(path) || "application/octet-stream";
 			fs.stat(path, (err, stats) => {
 				if (err) {

@@ -108,6 +108,9 @@ export default class HttpServer {
 		}
 		return Promise.all(promises) as any;
 	}
+	public stop(): Promise<void> {
+		return Promise.all([this.closeHttp(), this.closeHttps()]) as any;
+	}
 	public notFoundPage(): Promise<Buffer> {
 		return Promise.resolve(Buffer.from(`<html>
 		<head><title>404 Not Found</title></head>
@@ -153,6 +156,37 @@ export default class HttpServer {
 					this.https.listen(this.options.ssl.port, resolve);
 				});
 			});
+		});
+	}
+
+	private closeHttp(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			if (this.http) {
+				this.http.close((err) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+			} else {
+				resolve();
+			}
+		});
+	}
+	private closeHttps(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			if (this.https) {
+				this.https.close((err) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+			} else {
+				resolve();
+			}
 		});
 	}
 

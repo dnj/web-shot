@@ -4,6 +4,10 @@ export default class ConfigManager {
 	private cache: {
 		[key: string]: any;
 	} = {};
+
+	public clearCache() {
+		this.cache = {};
+	}
 	public async preload() {
 		const options = await Option.getAutoloads();
 		for (const option of options) {

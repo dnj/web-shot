@@ -49,9 +49,10 @@ INSERT INTO `options` (`name`, `value`, `autoload`) VALUES
 -- ('http_hostname', 'web-shot.ir', 1),
 -- ('http_port', '808', 1),
 -- ('puppeteer_args', '["--no-sandbox", "--disable-setuid-sandbox"]', 1),
--- ('process_group', 'web-shot', 1),
--- ('process_user', 'web-shot', 1),
 -- ('https', '{"key": "../key.pem","cert": "../cert.pem"}', 1),
+('puppeteer_args', '["--disable-dev-shm-usage"]', 1),
+('process_group', 'webshot', 1),
+('process_user', 'webshot', 1),
 ('puppeteer_headless', 'true', 1),
 ('puppeteer_max_pages', '20', 1),
 ('puppeteer_new_page_timeout', '10', 1);

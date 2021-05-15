@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mysql-server:
+    image: mariadb:10.5
+    restart: unless-stopped
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: ${WEBSHOT_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${WEBSHOT_DB_NAME}
+      MYSQL_USER: ${WEBSHOT_DB_USERNAME}
+      MYSQL_PASSWORD: ${WEBSHOT_DB_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./.docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
+
+  web-shot:
+    image: ${WEBSHOT_IMAGE}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DB_HOST: mysql-server
+      WEBSHOT_DB_USERNAME: ${WEBSHOT_DB_USERNAME}
+      WEBSHOT_DB_PASSWORD: ${WEBSHOT_DB_PASSWORD}
+      WEBSHOT_DB_NAME: ${WEBSHOT_DB_NAME}
+      WEBSHOT_HOSTNAME: ${WEBSHOT_HOSTNAME}
+      WEBSHOT_CERTBOT_RUN: ${WEBSHOT_CERTBOT_RUN}
+      WEBSHOT_CERTBOT_EMAIL: ${WEBSHOT_CERTBOT_EMAIL}
+      WEBSHOT_SSL_PORT: ${WEBSHOT_SSL_PORT}
+      WEBSHOT_SSL_REDIRECT: ${WEBSHOT_SSL_REDIRECT}
+    security_opt:
+      - seccomp:./.docker/webshot/chromium.json
+    volumes:
+      - webshot-storage:/home/webshot/dist/storage/
+    depends_on:
+      - mysql-server
+
+volumes: 
+  certbot-certs:
+  mysql-data:
+  webshot-storage:
