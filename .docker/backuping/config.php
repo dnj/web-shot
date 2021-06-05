@@ -23,9 +23,9 @@ $options = array(
 					return new \packages\backuping\backupables\MySQL();
 				},
 				'options' => array(
-					'host' => getenv('BACKUP_DB_HOST'),
-					'username' => getenv('BACKUP_DB_USERNAME'),
-					'password' => getenv('BACKUP_DB_PASSWORD'),
+					'host' => getenv('BACKUPING_DB_HOST'),
+					'username' => getenv('BACKUPING_DB_USERNAME'),
+					'password' => getenv('BACKUPING_DB_PASSWORD'),
 					'seprate' => true,
 					'exclude' => array(
 						'some_foo_database_name',
@@ -40,18 +40,19 @@ $options = array(
 			array(
 				'id' => 'webshot-backup-ftp-storage',
 				'directory' => function(array $options) {
-					$ftp = new \packages\base\IO\Directory\Ftp($options['path'] ?: null);
+					$ftp = new \packages\base\IO\Directory\Ftp($options['path'] ?: '');
+					$ftp->port = 
 					$ftp->hostname = $options['host'];
 					$ftp->username = $options['username'];
 					$ftp->password = $options['password'];
 					return $ftp;
 				},
-				'lifetime' => getenv('FTP_BACKUP_LIFETIME_IN_DAY'), // days that backup will be keeped
+				'lifetime' => getenv('BACKUPING_FTP_LIFETIME_IN_DAY'), // days that backup will be keeped
 				'options' => array(
-					'host' => getenv('FTP_BACKUP_HOST'),
-					'username' => getenv('FTP_BACKUP_USERNAME'),
-					'password' => getenv('FTP_BACKUP_PASSWORD'),
-					'path' => getenv('WEBSHOT_BACKUPING_FTP_PATH'),
+					'host' => getenv('BACKUPING_FTP_HOST'),
+					'username' => getenv('BACKUPING_FTP_USERNAME'),
+					'password' => getenv('BACKUPING_FTP_PASSWORD'),
+					'path' => getenv('BACKUPING_FTP_PATH'),
 				),
 			),
 		),
@@ -59,22 +60,18 @@ $options = array(
 	),
 );
 
-$backupingReportEnabled = getenv('WEBSHOT_BACKUPING_REPORT_ENABLED');
+$backupingReportEnabled = getenv('BACKUPING_REPORT_ENABLED');
 if ($backupingReportEnabled) {
 	$options['packages.backuping.config']['report'] = array(
-		'subject' => getenv('REPORT_SUBJECT'),
+		'subject' => getenv('BACKUPING_REPORT_SUBJECT'),
 		'sender' => array(
-			'name' => getenv('REPORT_SENDER_NAME'),
-			'mail' => getenv('REPORT_SENDER_EMAIL'),
+			'name' => getenv('BACKUPING_REPORT_SENDER_NAME'),
+			'mail' => getenv('BACKUPING_REPORT_SENDER_EMAIL'),
 		),
 		'receivers' => array(
 			array(
-				'name' => getenv('REPORT_RECEIVER_1_NAME'),
-				'mail' => getenv('REPORT_RECEIVER_1_EMAIL'),
-			),
-			array(
-				'name' => getenv('REPORT_RECEIVER_2_NAME'),
-				'mail' => getenv('REPORT_RECEIVER_2_EMAIL'),
+				'name' => getenv('BACKUPING_REPORT_RECEIVER_1_NAME'),
+				'mail' => getenv('BACKUPING_REPORT_RECEIVER_1_EMAIL'),
 			),
 		),
 	);

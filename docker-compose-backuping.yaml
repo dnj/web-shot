@@ -9,6 +9,7 @@ services:
       BACKUPING_DB_USERNAME: ${WEBSHOT_DB_USERNAME}
       BACKUPING_DB_PASSWORD: ${WEBSHOT_DB_PASSWORD}
       BACKUPING_FTP_HOST: ${WEBSHOT_BACKUPING_FTP_HOST}
+      BACKUPING_FTP_PORT: ${WEBSHOT_BACKUPING_FTP_PORT}
       BACKUPING_FTP_USERNAME: ${WEBSHOT_BACKUPING_FTP_USERNAME}
       BACKUPING_FTP_PASSWORD: ${WEBSHOT_BACKUPING_FTP_PASSWORD}
       BACKUPING_FTP_PATH: ${WEBSHOT_BACKUPING_FTP_PATH}
@@ -25,5 +26,5 @@ services:
       - web-shot
     volumes:
       - webshot-storage:/webshot/storage:ro
-      - ./.docker/backuping/config.php:/app/packages/backuping/.docker/base/config.php
+      - ./.docker/backuping/config.php:/app/packages/base/libraries/config/config.php
 
