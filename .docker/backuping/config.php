@@ -41,10 +41,14 @@ $options = array(
 				'id' => 'webshot-backup-ftp-storage',
 				'directory' => function(array $options) {
 					$ftp = new \packages\base\IO\Directory\Ftp($options['path'] ?: '');
-					$ftp->port = $options['port'];
-					$ftp->hostname = $options['host'];
-					$ftp->username = $options['username'];
-					$ftp->password = $options['password'];
+					$driver = new \packages\base\IO\drivers\Ftp(array(
+						'port' => $options['port'],
+						'hostname' => $options['host'],
+						'passive' => $options['passive'],
+						'username' => $options['username'],
+						'password' => $options['password'],
+					));
+					$ftp->setDriver($driver);
 					return $ftp;
 				},
 				'lifetime' => getenv('BACKUPING_FTP_LIFETIME_IN_DAY'), // days that backup will be keeped
@@ -54,6 +58,7 @@ $options = array(
 					'username' => getenv('BACKUPING_FTP_USERNAME'),
 					'password' => getenv('BACKUPING_FTP_PASSWORD'),
 					'path' => getenv('BACKUPING_FTP_PATH'),
+					'passive' => in_array(getenv('BACKUPING_FTP_PASSIVE'), [1, "1", true, "true", "yes"]),
 				),
 			),
 		),
@@ -62,7 +67,7 @@ $options = array(
 );
 
 $backupingReportEnabled = getenv('BACKUPING_REPORT_ENABLED');
-if ($backupingReportEnabled) {
+if (in_array($backupingReportEnabled, [1, "1", true, "true", "yes"])) {
 	$options['packages.backuping.config']['report'] = array(
 		'subject' => getenv('BACKUPING_REPORT_SUBJECT'),
 		'sender' => array(
