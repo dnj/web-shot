@@ -25,7 +25,7 @@
     "jimp": "^0.10.0",
     "mime": "^2.5.2",
     "mysql": "^2.16.0",
-    "puppeteer": "^9.1.1",
+    "puppeteer": "^6.0.0",
     "sharp": "^0.28.1"
   },
   "devDependencies": {
@@ -57,4 +57,3 @@
     "webpack-cli": "^3.1.2"
   }
 }
-

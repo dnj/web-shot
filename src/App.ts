@@ -206,11 +206,11 @@ export default class App {
 	}
 	private static runDB() {
 		App.databaseManager = new DatabaseManager({
-			host: process.env.DB_HOST || "127.0.0.1",
-			username: process.env.WEBSHOT_DB_USERNAME || "YOUR_USER",
-			password: process.env.WEBSHOT_DB_PASSWORD || "PASSWORD",
-			database: process.env.WEBSHOT_DB_NAME ||"DATABASE_NAME",
-			charset: process.env.WEBSHOT_DB_CHARSET || "utf8mb4",
+			host: process.env.WEBSHOT_MYSQL_HOST || "127.0.0.1",
+			username: process.env.WEBSHOT_MYSQL_USER || "YOUR_USER",
+			password: process.env.WEBSHOT_MYSQL_PASSWORD || "PASSWORD",
+			database: process.env.WEBSHOT_MYSQL_DATABASE ||"DATABASE_NAME",
+			charset: process.env.WEBSHOT_MYSQL_CHARSET || "utf8mb4",
 		});
 	}
 	private static async runHttpServer() {
@@ -254,7 +254,7 @@ export default class App {
 		 * @see https://github.com/puppeteer/puppeteer/blob/v9.1.1/docs/api.md#puppeteerlaunchoptions
 		 */
 		const secretENVs = [
-			"WEBSHOT_DB_HOST", "WEBSHOT_DB_USERNAME", "WEBSHOT_DB_NAME", "WEBSHOT_DB_PASSWORD", "WEBSHOT_MYSQL_ROOT_PASSWORD",
+			"WEBSHOT_MYSQL_HOST", "WEBSHOT_MYSQL_USER", "WEBSHOT_MYSQL_DATABASE", "WEBSHOT_MYSQL_PASSWORD",
 			"WEBSHOT_CERTBOT_EMAIL", "WEBSHOT_SSL_CERT_PATH", "WEBSHOT_SSL_KEY_PATH",
 			"WEBSHOT_HOSTNAME", "WEBSHOT_PORT", "WEBSHOT_SSL_PORT",
 		];

@@ -11,5 +11,5 @@ build docker image:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build -t $DOCKER_IMAGE .
+    - docker build -t $DOCKER_IMAGE --pull .
     - docker push $DOCKER_IMAGE
