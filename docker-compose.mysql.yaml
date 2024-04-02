@@ -1,8 +1,0 @@
-version: '3'
-services:
-  mysql:
-    image: mariadb:10.5
-    restart: unless-stopped
-    environment: 
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-    command: ['mysqld', '--sql_mode=', '--event_scheduler=ON']

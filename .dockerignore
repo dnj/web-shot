@@ -1,9 +1,0 @@
-node_modules
-dist
-INSTALL.md
-Dockerfile
-docker-compose*.yaml
-.env*
-.vscode
-.git
-.gitignore

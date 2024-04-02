@@ -1,59 +1,26 @@
 {
-  "name": "web-shot",
-  "version": "0.0.1",
-  "description": "Free Website Screenshot Generator",
-  "main": "index.js",
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "watch:webpack": "webpack --progress -w",
-    "watch:ts": "tsc -w",
-    "build:webpack": "webpack --progress",
-    "build:ts": "tsc",
-    "run": "node dist/Run.js",
-    "watch": "npm run watch:webpack &; npm run watch:ts &",
-    "dev": "npm run run &\nnpm run watch:webpack &\n npm run watch:ts &"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://git.jeyserver.com/yeganemehr/web-shot.git"
-  },
-  "author": "Amir.h Yeganemehr",
-  "license": "ISC",
   "dependencies": {
-    "dotenv": "^9.0.0",
-    "ejs": "^2.6.1",
-    "express": "^4.16.4",
-    "jimp": "^0.10.0",
-    "mime": "^2.5.2",
-    "mysql": "^2.16.0",
-    "puppeteer": "^6.0.0",
-    "sharp": "^0.28.1"
+    "@mdi/font": "^7.4.47",
+    "nuxt": "^3.11.1",
+    "puppeteer": "^22.6.1",
+    "vazirmatn": "^33.0.3",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
-    "@types/bootstrap": "^4.1.4",
-    "@types/ejs": "^2.6.0",
-    "@types/jquery": "^3.3.28",
-    "@types/mysql": "^2.15.5",
-    "@types/node": "^10.17.59",
-    "@types/sharp": "^0.28.0",
-    "bootstrap": "4",
-    "copy-webpack-plugin": "^4.6.0",
-    "css-loader": "^2.0.1",
-    "file-loader": "^2.0.0",
-    "font-awesome": "^4.7.0",
-    "html-loader": "^0.5.5",
-    "jquery": "^3.3.1",
-    "mini-css-extract-plugin": "^0.5.0",
-    "node-sass": "^4.11.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "precss": "^4.0.0",
-    "postcss-loader": "^3.0.0",
-    "sass-loader": "^7.1.0",
-    "style-loader": "^0.23.1",
-    "terser-webpack-plugin": "^2.3.6",
-    "ts-loader": "^5.3.1",
-    "tslint": "^5.11.0",
-    "typescript": "^4.2.3",
-    "webpack": "^4.28.0",
-    "webpack-cli": "^3.1.2"
+    "sass": "^1.72.0",
+    "sass-loader": "^14.1.1",
+    "vite-plugin-vuetify": "^2.0.3",
+    "vuetify": "^3.5.13"
   }
 }
