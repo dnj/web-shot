@@ -1,6 +1,20 @@
 
 @use 'vuetify' with (
 	$body-font-family: "Vazirmatn",
+				$typography: (
+					'h1': ('letter-spacing': 0),
+					'h2': ('letter-spacing': 0),
+					'h3': ('letter-spacing': 0),
+					'h4': ('letter-spacing': 0),
+					'h5': ('letter-spacing': 0),
+					'h6': ('letter-spacing': 0),
+					'subtitle-1': ('letter-spacing': 0),
+					'subtitle-2': ('letter-spacing': 0),
+					'body-1': ('letter-spacing': 0),
+					'body-2': ('letter-spacing': 0),
+					'button': ('letter-spacing': 0),
+					),
+					$line-height-root: 2,
 );
 
 @import "vazirmatn/Vazirmatn-font-face.css";
