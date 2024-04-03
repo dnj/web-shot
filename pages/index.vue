@@ -4,7 +4,7 @@
 		<div class="text-secondary"><strong>سریع، رایگان و بروز</strong></div>
 		<v-row justify="center" class="mt-5">
 			<v-col lg="5" md="8" sm="10" cols="11">
-				<v-text-field dir="ltr" class="px-0">
+				<v-text-field dir="ltr" v-model="url" class="px-0">
 					<template v-slot:append-inner>
 						<v-btn color="primary" height="100%" class="font-weight-bold">مشاهده تصویر</v-btn>
 					</template>
@@ -25,14 +25,14 @@
 			<div class="title-of-content">همین حالا امتحان کنید!</div>
 			<div class="content">به سادگی از کد زیر در وبسایت خود استفاده کنید:</div>
 			<div class="code-background" dir="ltr">
-				&lt;img src="http://web-shot.ir/capture?url=https://www.google.com/"&gt;
+				&lt;img src="{{ getCaptureURL() }}"&gt;
 			</div>
 			<div class="title-of-content">گزینه های پیشرفته</div>
 			<div class="content">گزینه های پیشرفته تر نیز وجود دارد، شما می توانید با تعیین عرض مشخصه تصویر را تغییر
 				دهید و
 				شما می توانید تعداد پیکسل های وب سایت اصلی که می خواهید برش دهید تعیین کنید. مثلا:</div>
 			<div class="code-background" dir="ltr">{{ `<img
-					src="http://web-shot.ir/capture?url=https://www.google.com/&width=100&crop=600">` }}</div>
+					src="${getCaptureURL({width: '100', crop: '600'})}">` }}</div>
 			<div class="content">گرفتن عکسهای صفحه وب از یک مرورگر پیکسل 1200x1200 گرفته شده است. کد بالا، صفحه نمایش
 				اصلی
 				را به 100 پیکسل عرض می برد و سپس 600 پیکسل از تصویر را می برد.</div>
@@ -40,7 +40,22 @@
 		</div>
 	</v-container>
 </template>
+<script lang="ts">
 
+export default defineComponent({ 
+	data() {
+		return {url: ""};
+	},
+	methods: {
+		getCaptureURL(query?: Record<string, string>) {
+			const url = this.url || "https://www.google.com/";
+			const params = (new URLSearchParams(Object.assign({ url: url }, query))).toString().replaceAll("%2F", "/").replaceAll("%3A", ":");
+			const location = useRequestURL();
+			return new URL((location.protocol || "http:") + "//" + location.host + "/capture?" + params);
+		}
+	}
+})
+</script>
 <style lang="scss">
 .banner {
 	background-color: rgb(var(--v-theme-backgroundGray));
