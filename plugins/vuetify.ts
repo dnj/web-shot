@@ -11,6 +11,24 @@ export default defineNuxtPlugin((app) => {
 			locale: 'fa',
 			messages: { fa },
 		},
+		theme: {
+			themes: {
+				light: {
+					colors: {
+						primary: "#007bff",
+						secondary: "#6c767e",
+						titleGray: "#6c757d",
+						subtitleGray: "#6e7880",
+						contentGray: "#7c848b",
+						backgroundGray: "#ecf0f1",
+						codeText: "7b8a8b",
+						background:"#fafafa"
+					},
+				},
+			},
+		},
 	})
 	app.vueApp.use(vuetify)
 })
+
+
