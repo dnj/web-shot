@@ -90,3 +90,67 @@ paths:
               schema:
                 type: string
                 format: binary
+  /api/gallery:
+    get:
+      summary: Retrieve a list of recently captured screenshots.
+      description: Returns an array of recently captured screenshots with their IDs and URLs.
+      parameters:
+        - in: query
+          name: count
+          description: The number of screenshots to retrieve (maximum 500, minimum 1).
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+      responses:
+        '200':
+          description: Successful retrieval.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Sorted by capture time in descending order (newest first).
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Unique identifier of the screenshot.
+                    url:
+                      type: string
+                      description: URL of the captured screenshot.
+
+  /api/gallery/{shot}:
+    get:
+      summary: Retrieve a specific captured screenshot.
+      description: Returns the image of a specific captured screenshot identified by its ID.
+      parameters:
+        - in: path
+          name: shot
+          description: The unique identifier of the screenshot to retrieve.
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: width
+          description: (Optional) Desired width of the screenshot in pixels.
+          schema:
+            type: integer
+        - in: query
+          name: height
+          description: (Optional) Desired height of the screenshot in pixels.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful retrieval.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
