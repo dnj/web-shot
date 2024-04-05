@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "prisma": "^5.12.1",
-    "sass": "^1.72.0",
+    "sass": "^1.74.1",
     "sass-loader": "^14.1.1",
     "vite-plugin-vuetify": "^2.0.3",
     "vuetify": "^3.5.14"
