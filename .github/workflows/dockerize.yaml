@@ -2,6 +2,7 @@ name: Make Docker Image
 on:
   push:
     branches:
+      - '*'
     tags:
       - 'v*'
   pull_request:
