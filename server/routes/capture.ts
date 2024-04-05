@@ -31,7 +31,7 @@ const captureRequestSchema = z.object({
 
 });
 
-async function resizeShot(shot: Shot, options?: ScreenshotResizeOptions): Promise<Buffer> {
+export async function resizeShot(shot: Shot, options?: ScreenshotResizeOptions): Promise<Buffer> {
 	const image: Buffer | null = await useCaptureStorage().getItemRaw(shot.id.toString());
 	if (image === null) {
 		throw new Error("Cannot find shot file on storage");
