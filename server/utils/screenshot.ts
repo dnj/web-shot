@@ -1,11 +1,8 @@
 import { Shot } from "@prisma/client";
 import { usePrisma } from "./prisma"
-import fs from "fs/promises";
-import { fileURLToPath } from "url";
-import path from "path";
 
 export const SCREENSHOT_MAX_AGE = 86400 * 15; // Seconds
-export const SCREENSHOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "public", "captures");
+export const SCREENSHOT_MAX_LOCK_TIME = 15;
 let clearTimer: NodeJS.Timer|undefined;
 
 export async function purgeOldShots(): Promise<void> {
@@ -39,9 +36,7 @@ export async function purgeOldShots(): Promise<void> {
 }
 
 export async function purgeShot(shot: Shot): Promise<void> {
-	if (shot.image) {
-		await deleteScreenshot(shot.image);
-	}
+	await useCaptureStorage().removeItem(shot.id.toString());
 	await usePrisma().shot.delete({
 		where: {
 			id: shot.id
@@ -49,17 +44,10 @@ export async function purgeShot(shot: Shot): Promise<void> {
 	});
 }
 
-export async function deleteScreenshot(filename: string): Promise<void> {
-	const filepath = getScreenshotPath(filename);
-	try {
-		await fs.rm(filepath);
-	} catch {}
-}
-
 export async function purgeOrphanShots(): Promise<void> {
-	const entries = (await fs.readdir(SCREENSHOT_DIR));
+	const entries = await useCaptureStorage().getKeys();
 	for (const filename of entries) {
-		if (!filename.endsWith(".png") && !filename.endsWith(".jpeg")) {
+		if (!/^\d+$/.test(filename)) {
 			continue;
 		}
 		try {
@@ -73,11 +61,11 @@ export async function purgeOrphanShots(): Promise<void> {
 export async function purgeOrphanShot(filename: string): Promise<void> {
 	const shot = await usePrisma().shot.findUnique({
 		where: {
-			image: filename
+			id: parseInt(filename, 10)
 		}
 	});
 	if (shot === null) {
-		await deleteScreenshot(filename);
+		await useCaptureStorage().removeItem(filename);
 	}
 }
 
@@ -95,6 +83,6 @@ export function setupScreenshotClear(): void {
 	}, 24 * 60 * 1000);
 }
 
-export function getScreenshotPath(filename: string): string {
-	return path.join(SCREENSHOT_DIR, filename);
+export function useCaptureStorage() {
+	return useStorage("captures");
 }

@@ -1,26 +1,16 @@
-import { IScreenshotOptions, screenshot } from "../utils/browser";
-import fs from "fs/promises";
+import { screenshot } from "../utils/browser";
 import crypto from "crypto";
 import { z } from "zod";
 import { H3Event } from "h3";
-import path from "path";
 import sharp from "sharp";
 import { usePrisma } from "../utils/prisma";
-import { fileURLToPath } from 'url';
-import { SCREENSHOT_DIR, SCREENSHOT_MAX_AGE, getScreenshotPath, setupScreenshotClear } from "../utils/screenshot";
+import {  SCREENSHOT_MAX_AGE, SCREENSHOT_MAX_LOCK_TIME, setupScreenshotClear, useCaptureStorage } from "../utils/screenshot";
+import { Shot } from "@prisma/client";
 
 class LockError extends Error {
 	public constructor(message = "screenshot is in lock") {
 		super(message);
 	}
-}
-
-interface ScreenshotFileInfo {
-	age: number;
-	size: number;
-	createdAt: Date;
-	width: number;
-	height: number;
 }
 
 interface ScreenshotResizeOptions {
@@ -41,80 +31,38 @@ const captureRequestSchema = z.object({
 
 });
 
-function getScreenshotFilename(options: IScreenshotOptions): string {
-	const values = `${options.url}-${options.fullpage ? '1' : '0'}-${options.viewportWidth}-${options.viewportWidth}`;
-	const hash = crypto.createHash("sha256").update(values).digest("hex");
-	return `${hash}.${options.format}`;
-}
-
-async function getScreenshotInfo(filepath: string, lockTimeout: number = 15000): Promise<ScreenshotFileInfo> {
-	await waitForScreenshotLock(filepath, lockTimeout);
-	const stat = await fs.stat(filepath);
-	const age = Math.floor((Date.now() - stat.ctime.getTime()) / 1000);
-	const metadata = await sharp(filepath).metadata();
-	if (metadata.width === undefined || metadata.height === undefined) {
-		throw new Error("image file is currpted");
+async function resizeShot(shot: Shot, options?: ScreenshotResizeOptions): Promise<Buffer> {
+	const image: Buffer | null = await useCaptureStorage().getItemRaw(shot.id.toString());
+	if (image === null) {
+		throw new Error("Cannot find shot file on storage");
 	}
-	return {
-		age,
-		size: stat.size,
-		createdAt: stat.ctime,
-		width: metadata.width,
-		height: metadata.height,
-	};
-}
-
-async function waitForScreenshotLock(filepath: string, lockTimeout: number = 15000): Promise<void> {
-	const startAt = Date.now();
-	while (!lockTimeout || Date.now() - startAt < lockTimeout) {
-		try {
-			await fs.stat(filepath + ".lock");
-		} catch {
-			return;
-		}
-	}
-	throw new LockError("timeout");
-}
-
-async function lockScreenshot(filepath: string, lockTimeout: number = 15000): Promise<string> {
-	await waitForScreenshotLock(filepath, lockTimeout);
-	const lockFile = filepath + ".lock";
-	await fs.writeFile(lockFile, "");
-	return lockFile;
-}
-
-async function resizeScreenshot(filepath: string, info: ScreenshotFileInfo, options?: ScreenshotResizeOptions): Promise<Buffer> {
-	if (options && ((options.width && options.width != info.width) || (options.height && options.height != info.height))) {
-		const image = sharp(filepath);
-		return image.resize({
+	if ((options?.width && options.width != shot.viewport_width) || (options?.height && options.height != shot.viewport_height)) {
+		const resizer = sharp(image);
+		return resizer.resize({
 			width: options.width,
 			height: options.height,
 			fit: "fill"
 		}).toBuffer();
 	}
-	return fs.readFile(filepath)
+	return image;
 }
 
-function getFinalImageSize(info: ScreenshotFileInfo, resize?: ScreenshotResizeOptions): { width: number, height: number } {
-	return {
-		width: resize?.width || info.width,
-		height: resize?.height || info.height,
+export async function sendShot(event: H3Event, shot: Shot, resize: ScreenshotResizeOptions): Promise<Buffer | undefined> {
+	resize = {
+		width: resize?.width || shot.viewport_width,
+		height: resize?.height || shot.viewport_height,
 	};
-}
-async function sendScreenshot(event: H3Event, filepath: string, info: ScreenshotFileInfo, resize?: ScreenshotResizeOptions): Promise<Buffer | undefined> {
-	resize = getFinalImageSize(info, resize);
-
-	const image = await resizeScreenshot(filepath, info, resize);
+	const image = await resizeShot(shot, resize);
 	const etag = crypto.createHash("md5").update(JSON.stringify(resize)).update(image).digest("hex");
 
 	setHeader(event, "Cache-Control", `public,max-age=${SCREENSHOT_MAX_AGE}`);
-	setHeader(event, "Expires", (new Date(info.createdAt.getTime() + SCREENSHOT_MAX_AGE * 1000)).toUTCString());
+	setHeader(event, "Expires", (new Date(shot.create_at.getTime() + SCREENSHOT_MAX_AGE * 1000)).toUTCString());
 	setHeader(event, "ETag", etag);
-	setHeader(event, "Last-Modified", info.createdAt.toUTCString());
+	setHeader(event, "Last-Modified", shot.create_at.toUTCString());
 
 	const requestModifiedSince = getHeader(event, "If-Modified-Since");
 	const requestModifiedSinceDate = requestModifiedSince ? new Date(requestModifiedSince) : undefined;
-	let cache = (requestModifiedSince !== undefined && requestModifiedSinceDate?.toUTCString() === info.createdAt.toUTCString());
+	let cache = (requestModifiedSince !== undefined && requestModifiedSinceDate?.toUTCString() === shot.create_at.toUTCString());
 
 	const requestEtag = getHeader(event, "If-None-Match");
 	if (requestEtag !== undefined) {
@@ -126,11 +74,28 @@ async function sendScreenshot(event: H3Event, filepath: string, info: Screenshot
 		return;
 	}
 
-	const format = path.extname(filepath).substring(1);
-	setHeader(event, "Content-Type", `image/${format}`);
+	setHeader(event, "Content-Type", `image/${shot.format.toLowerCase()}`);
 	setHeader(event, "Content-Length", image.byteLength);
 
 	return image;
+
+
+}
+
+export async function waitForShot(shot: number|Shot, timeout?: number): Promise<Shot> {
+	const shotId = typeof shot === "object" ? shot.id : shot;
+
+	if (timeout === undefined) {
+		timeout = SCREENSHOT_MAX_LOCK_TIME * 1000;
+	}
+	const startAt = Date.now();
+	while (!timeout || Date.now() - startAt < timeout) {
+		shot = await usePrisma().shot.findUniqueOrThrow({where: {id: shotId}});
+		if (shot.status !== "CAPTURING") {
+			return shot;
+		}
+	}
+	throw new LockError("timeout");
 }
 
 export default defineEventHandler(async (event) => {
@@ -138,29 +103,45 @@ export default defineEventHandler(async (event) => {
 
 	const query = await getValidatedQuery(event, captureRequestSchema.parse);
 
-
-	const filename = getScreenshotFilename(query);
-	const filepath = getScreenshotPath(filename);
-
-	await waitForScreenshotLock(filepath);
-	let info: ScreenshotFileInfo | undefined;
-	try {
-		info = await getScreenshotInfo(filepath);
-	} catch {
-
-	}
-
-	if (info) {
-		if (info.age < query.maxAge) {
-			return sendScreenshot(event, filepath, info, query);
-		} else {
-			await fs.rm(filepath);
+	let shot = await usePrisma().shot.findFirst({
+		orderBy: {
+			id: "desc",
+		},
+		where: {
+			url: query.url,
+			viewport_width: query.viewportWidth,
+			viewport_height: query.viewportHeight,
+			format: query.format.toUpperCase() as "PNG" | "JPEG",
+			fullpage: query.fullpage,
+			OR: [
+				{
+					status: "AVAILABLE",
+					capture_at: {
+						gte: new Date(Date.now() - query.maxAge * 10000)
+					}
+				},
+				{
+					status: "CAPTURING",
+					create_at: {
+						gte: new Date(Date.now() - SCREENSHOT_MAX_LOCK_TIME * 10000)
+					}
+				}
+			]
+		}
+	});
+	if (shot?.status === "CAPTURING") {
+		try {
+			shot = await waitForShot(shot);
+		} catch(e) {
+			if (! (e instanceof LockError)) {
+				throw e;
+			}
+			shot = null;
 		}
 	}
-	const lock = await lockScreenshot(filepath);
-	let image: Buffer;
-	try {
-		const shot = await usePrisma().shot.create({
+
+	if (shot?.status !== "AVAILABLE") {
+		shot = await usePrisma().shot.create({
 			data: {
 				url: query.url,
 				format: query.format.toUpperCase() as "PNG" | "JPEG",
@@ -171,10 +152,10 @@ export default defineEventHandler(async (event) => {
 			},
 		});
 		try {
-			image = await screenshot(query);
-			await fs.writeFile(filepath, image);
+			const image = await screenshot(query);
+			await useCaptureStorage().setItemRaw(shot.id.toString(), image);
 			await usePrisma().shot.update({
-				data: { capture_at: new Date(), status: "AVAILABLE", image: filename },
+				data: { capture_at: new Date(), status: "AVAILABLE" },
 				where: { id: shot.id }
 			});
 		} catch (e) {
@@ -185,17 +166,10 @@ export default defineEventHandler(async (event) => {
 
 			throw e;
 		}
-	} finally {
-		await fs.rm(lock);
+
+		setupScreenshotClear();
 	}
 
-	setupScreenshotClear();
 
-	return sendScreenshot(event, filepath, {
-		age: 0,
-		createdAt: new Date(),
-		size: image.byteLength,
-		width: query.viewportWidth,
-		height: query.viewportHeight,
-	}, query);
+	return sendShot(event, shot, query);
 });

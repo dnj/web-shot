@@ -70,10 +70,7 @@ let idleTimer: NodeJS.Timer;
 
 export async function useBrowser(): Promise<BroswerWrapper> {
 	if (!browser) {
-		const browserInstance = await puppeteer.launch({
-			args: ["--no-sandbox"],
-			headless: true,
-		});
+		const browserInstance = await puppeteer.launch();
 		browser = new BroswerWrapper(browserInstance);
 		browserInstance.on("disconnected", () => {
 			browser?.cancelLock(); 
