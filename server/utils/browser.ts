@@ -14,6 +14,11 @@ interface LockWorker<T> {
 	(instance: Browser): Promise<T> | T;
 }
 
+export class NavigationError extends Error {
+	public constructor(public readonly errorCode: string, public readonly url: string) {
+		super(`${errorCode} at ${url}`);
+	}
+}
 class BroswerWrapper {
 	private lock: Mutex;
 	private lastUseAt: Date;
@@ -46,11 +51,11 @@ class BroswerWrapper {
 	}
 
 	public async screenshot(options: IScreenshotOptions): Promise<Buffer> {
-		const page = await this.runExclusive((instance) => instance.newPage());
+		const page = await this.runExclusive((instance) => instance.newPage());		
 		await page.setViewport({ width: options.viewportWidth || 0, height: options.viewportHeight || 0 });
 		let image: Buffer;
 		try {
-			await page.goto(options.url, { waitUntil: "networkidle2", timeout: options.timeout });
+			await this.goto(page, options);
 			image = await this.runExclusive(() => page.screenshot({
 				type: options.format,
 				fullPage: options.fullpage,
@@ -62,6 +67,18 @@ class BroswerWrapper {
 			} catch { }
 		}
 		return image;
+	}
+
+	private goto(page: Page, options:IScreenshotOptions): Promise<void> {
+		return new Promise((resolve, reject) => {
+			page.on("requestfailed", (request) => {
+				console.log(request);
+				const url = request.url();
+				const failure = request.failure();
+				reject(new NavigationError(failure?.errorText || "UNKNOWN_ERROR", url));
+			});
+			page.goto(options.url, { waitUntil: "networkidle2", timeout: options.timeout }).then(() => resolve(), reject);
+		})
 	}
 }
 

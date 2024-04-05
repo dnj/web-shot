@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { usePrisma } from "../utils/prisma";
 import {  SCREENSHOT_MAX_AGE, SCREENSHOT_MAX_LOCK_TIME, setupScreenshotClear, useCaptureStorage } from "../utils/screenshot";
 import { Shot } from "@prisma/client";
+import { useImagitorErrorHandle } from "../utils/error-handling";
 
 class LockError extends Error {
 	public constructor(message = "screenshot is in lock") {
@@ -98,7 +99,7 @@ export async function waitForShot(shot: number|Shot, timeout?: number): Promise<
 	throw new LockError("timeout");
 }
 
-export default defineEventHandler(async (event) => {
+const handler = defineEventHandler(async (event) => {
 	assertMethod(event, "GET", false);
 
 	const query = await getValidatedQuery(event, captureRequestSchema.parse);
@@ -173,3 +174,6 @@ export default defineEventHandler(async (event) => {
 
 	return sendShot(event, shot, query);
 });
+
+
+export default useImagitorErrorHandle(handler);

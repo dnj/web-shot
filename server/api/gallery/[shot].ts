@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { resizeShot, sendShot } from "../../routes/capture";
+import { sendShot } from "../../routes/capture";
 import { Shot } from "@prisma/client";
 
 const requestSchema = z.object({
@@ -9,12 +9,12 @@ const requestSchema = z.object({
 
 function sendNotfound(): Promise<never> {
     return Promise.reject(createError({
-        statusMessage: "Cannot find shot",
+        message: "Cannot find shot",
         status: 404
     }));
 }
 
-export default defineEventHandler(async (event) => {
+const handler = defineEventHandler(async (event) => {
     assertMethod(event, "GET", false);
 
     const shotIdString = getRouterParam(event, "shot")!;
@@ -36,4 +36,6 @@ export default defineEventHandler(async (event) => {
     }
 
     return sendShot(event, shot, query);
-})
+});
+
+export default useImagitorErrorHandle(handler);
