@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: Web-Shot API
+  description: Capture screenshots of webpages programmatically.
+  version: 1.0.0
+servers:
+  - url: https://web-shot.ir/
+
+paths:
+  /capture:
+    get:
+      summary: Capture a screenshot of a webpage.
+      description: Takes a URL and optional parameters to capture a screenshot of a webpage.
+      parameters:
+        - in: query
+          name: url
+          description: The URL of the webpage to capture.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: width
+          description: The desired width of the final screenshot in pixels.
+          schema:
+            type: integer
+            default: 1200
+            minimum: 100
+        - in: query
+          name: height
+          description: The desired height of the final screenshot in pixels.
+          schema:
+            type: integer
+            default: 600
+            minimum: 100
+        - in: query
+          name: maxAge
+          description: Max age in seconds of image if it already cached.
+          schema:
+            type: integer
+            default: 86400
+            minimum: 10
+        - in: query
+          name: format
+          description: "Image format"
+          schema:
+            type: string
+            default: jpeg
+            enum:
+              - jpeg
+              - png
+        - in: query
+          name: fullpage
+          description: Whether to take a screenshot of the full webpage or not.
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: viewportWidth
+          description: The page width in pixel.
+          schema:
+            type: integer
+            default: 1200
+            minimum: 320
+            maximum: 4096
+        - in: query
+          name: viewportHeight
+          description: The page height in pixel.
+          schema:
+            type: integer
+            default: 600
+            minimum: 320
+            maximum: 4096
+        - in: query
+          name: timeout
+          description: The max time in ms to wait for the page to load.
+          schema:
+            type: integer
+            default: 10000
+            minimum: 2000
+            maximum: 15000
+      responses:
+        '200':
+          description: Successful capture.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary

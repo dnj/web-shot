@@ -9,7 +9,7 @@ Web-Shot is a high-performance online screenshot service that lets you capture a
 ### Features
 
 * **Lightning Speed:** Capture webpages in a flash thanks to the power of Google Chrome.
-* **Flexible API:** Integrate Web-Shot seamlessly into your applications with a well-documented API.
+* **Flexible API:** Integrate Web-Shot seamlessly into your applications with a well-documented API.  For detailed API specifications, refer to the [OpenAPI 3.0 document](openapi.yaml)
 * **Simple UI:** For those who prefer a point-and-click approach, Web-Shot offers a user-friendly interface. 
 * **Tech Stack:** Built with modern technologies like Nuxt.js, Prisma, and TypeScript for a robust and maintainable codebase.
 * **Deployment Options:** Deploy Web-Shot on your server or leverage the convenience of Docker images.
@@ -87,6 +87,25 @@ The response will be the captured screenshot in either JPEG or PNG format depend
 **UI:**
 
 Visit `http://localhost:3000` to access the user interface for capturing screenshots.
+
+### Docker Deployment
+
+Web-Shot provides a convenient Docker image for streamlined deployment. This section guides you through getting started with Web-Shot using Docker.
+
+```bash
+docker pull ghcr.io/dnj/web-shot:2
+```
+
+**Environment Variables:**
+
+Web-Shot utilizes environment variables for configuration. You can either specify them directly when running the container.
+
+Here are some of the important environment variables:
+
+* `DATABASE_URL`: URL for your database connection (refer to Prisma documentation for format).
+* `PORT`: Port on which the Web-Shot application will listen (defaults to 80).
+
+For a more detailed configuration using a `.env` file and Docker Compose, refer to the `docker-compose.yaml` file provided in the repository.
 
 ### License
 
