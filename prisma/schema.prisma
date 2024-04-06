@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Shot {
+  id              Int        @id @default(autoincrement())
+  create_at       DateTime   @default(now()) @map("create_at") @db.Timestamp(0)
+  capture_at      DateTime?  @map("capture_at")  @db.Timestamp(0)
+  url             String     @db.VarChar(535)
+  format          ShotFormat
+  fullpage        Boolean    @default(false)
+  viewport_width  Int        @db.UnsignedSmallInt
+  viewport_height Int        @db.UnsignedSmallInt
+  image           String?    @db.VarChar(100) @unique()
+  status          ShotStatus
+
+  @@index([url(length: 191)], map: "url")
+  @@map("shots")
+}
+
+enum ShotStatus {
+  CAPTURING
+  AVAILABLE
+  ERROR
+}
+
+enum ShotFormat {
+  JPEG
+  PNG
+}

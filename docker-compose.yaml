@@ -1,0 +1,26 @@
+services:
+  app:
+    image: ghcr.io/dnj/web-shot:nuxtjs
+    restart: unless-stopped
+    ports:
+      - 3000:80
+    environment:
+      DATABASE_URL: "mysql://web-shot:${DB_PASSWORD}@mysql:3306/web-shot"
+    volumes:
+      - app-captures:/app/public/catpures
+    security_opt:
+      - seccomp:./chrome.json
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment: 
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MARIADB_DATABASE: web-shot
+      MARIADB_USER: web-shot
+      MARIADB_PASSWORD: $DB_PASSWORD
+
+volumes:
+  app-captures:

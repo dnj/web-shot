@@ -26,4 +26,12 @@ export default defineNuxtConfig({
       },
     },
   },
+  nitro: {
+    storage: {
+      captures: {
+        driver: 'fs',
+        base: './.data/captures'
+      }
+    }
+  }
 })
