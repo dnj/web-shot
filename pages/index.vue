@@ -1,10 +1,10 @@
 <template>
 	<div class="banner text-center py-15">
-		<h1>ابزاری برای تصویر صفحات وب</h1>
+		<h1>{{ $t("tool for capturing web pages") }}</h1>
 		<div class="text-secondary"><strong>سریع، رایگان و بروز</strong></div>
 		<v-row justify="center" class="mt-5">
 			<v-col lg="5" md="8" sm="10" cols="11">
-				<v-text-field dir="ltr" class="px-0">
+				<v-text-field variant="outlined" dir="ltr" class="px-0">
 					<template v-slot:append-inner>
 						<v-btn color="primary" height="100%" class="font-weight-bold">مشاهده تصویر</v-btn>
 					</template>
@@ -88,5 +88,8 @@
 	--v-field-input-padding-bottom: 7px;
 	--v-input-control-height: 0px;
 	--v-field-padding-start: 20px;
+}
+.v-input.v-textarea>.v-input__control>.v-input__slot:before {
+	border: none;
 }
 </style>
