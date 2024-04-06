@@ -28,6 +28,7 @@
     "@rollup/plugin-image": "^3.0.3",
     "prisma": "^5.12.1",
     "sass": "^1.74.1",
+    "@nuxtjs/i18n": "npm:@nuxtjs/i18n-edge",
     "sass-loader": "^14.1.1",
     "unplugin-font-to-buffer": "^0.2.0",
     "vite-plugin-vuetify": "^2.0.3",

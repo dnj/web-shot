@@ -7,7 +7,7 @@
                 در
                 زیر
                 لیستی کامل از گزینه ها را مشاهده می کنید:</div>
-            <v-text-field class="mt-5" dir="ltr"></v-text-field>
+            <v-text-field variant="outlined" class="mt-5" dir="ltr"></v-text-field>
             <v-btn color="primary">مشاهده ی تصویر وب سایت</v-btn>
 
             <div class="docs-title2">لیست کامل گزینه های اصلاح کننده تصویر</div>
