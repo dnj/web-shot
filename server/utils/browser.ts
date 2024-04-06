@@ -74,8 +74,10 @@ class BroswerWrapper {
 			page.on("requestfailed", (request) => {
 				console.log(request);
 				const url = request.url();
-				const failure = request.failure();
-				reject(new NavigationError(failure?.errorText || "UNKNOWN_ERROR", url));
+				if (url === options.url) {
+					const failure = request.failure();
+					reject(new NavigationError(failure?.errorText || "UNKNOWN_ERROR", url));
+				}
 			});
 			page.goto(options.url, { waitUntil: "networkidle2", timeout: options.timeout }).then(() => resolve(), reject);
 		})
@@ -87,7 +89,7 @@ let idleTimer: NodeJS.Timer;
 
 export async function useBrowser(): Promise<BroswerWrapper> {
 	if (!browser) {
-		const browserInstance = await puppeteer.launch();
+		const browserInstance = await puppeteer.launch({ executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", headless: false });
 		browser = new BroswerWrapper(browserInstance);
 		browserInstance.on("disconnected", () => {
 			browser?.cancelLock(); 

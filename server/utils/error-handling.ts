@@ -83,6 +83,7 @@ export function useImagitorErrorHandle(eventHandler: EventHandler<EventHandlerRe
                 return response;
             }
         } catch (e) {
+            console.log(e);
             const query = getImageQuery(event);
             
             let statusCode = 500;
