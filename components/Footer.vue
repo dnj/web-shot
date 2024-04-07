@@ -5,13 +5,13 @@
             <v-row>
                 <v-col sm="6" cols="12"
                     :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'right' : 'left'">
-                    <img src="./../styles/pics/logo.png" />
+                    <img src="~/assets/images/logo.png" />
                 </v-col>
                 <v-col sm="6" cols="12"
                     :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'left' : 'right'">
-                    <v-btn variant="text">مستندات</v-btn>
-                    <v-btn variant="text">گالری</v-btn>
-                    <v-btn variant="text">تماس با ما</v-btn>
+                    <v-btn to="/docs" variant="text">مستندات</v-btn>
+                    <v-btn to="/gallery" variant="text">گالری</v-btn>
+                    <v-btn to="/contact" variant="text">تماس با ما</v-btn>
                 </v-col>
             </v-row>
             <v-divider class="my-5"></v-divider>

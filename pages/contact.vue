@@ -28,11 +28,22 @@
                 </div>
             </v-col>
             <v-col md="6" cols="12">
-                <v-img class="mx-auto" src="./../styles/pics/contactus.svg" height="300px"></v-img>
+                <v-img class="mx-auto" src="~/assets/images/contactus.svg" height="300px"></v-img>
             </v-col>
         </v-row>
     </v-container>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+    setup(){
+        useHead({
+            title:'وب شات | تماس با ما'
+        })
+    }
+})
+</script>
 <style lang="scss">
 .contact {
     margin-top: 30px;
