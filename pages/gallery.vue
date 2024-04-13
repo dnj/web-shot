@@ -1,28 +1,35 @@
 <template>
     <v-container class="mb-15">
         <div class="gallery">
-            <div class="gallery-title">گالری تصاویر</div>
-            <div class="gallery-content">نگاهی به تصاویر web-shot.ir از 0 وب سایت برتر نگاه کنید. رابط
-                برنامه
-                نویسی ما تصاویری با کیفیت بالا را
-                دریافت می کند و آنها را بر روی یک زیر ساخت شبکه نگهداری می کند تا در سریع ترین زمان آنها را تحویل دهد.
+            <div class="gallery-title">{{ $t("gallery.title") }}</div>
+            <div class="gallery-content">
+                {{ $t("gallery.content.part1") +" "+ numberOfImages +" "+ $t("gallery.content.part2") +
+                    $t("gallery.content.part3")}}
             </div>
         </div>
     </v-container>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useI18n } from '#imports'
 export default defineComponent({
-    setup(){
+    setup() {
+        const { t } = useI18n()
         useHead({
-            title: 'وب شات | گالری'
+            title: t("pages.index") + " | " + t("pages.gallery")
         })
+    },
+    data() {
+        return {
+            numberOfImages: 0
+        }
     }
 })
 </script>
 <style lang="scss">
 .gallery {
     text-align: center;
+
     .gallery-title {
         color: rgb(var(--v-theme-titleGray));
         font-weight: 900;
@@ -31,7 +38,8 @@ export default defineComponent({
     }
 
     .gallery-content {
-        color: rgb(var(--v-theme-contentGray));;
+        color: rgb(var(--v-theme-contentGray));
+        ;
     }
 }
 </style>

@@ -3,13 +3,9 @@ import fa from "./locales/fa.json";
 
 export default defineI18nConfig(() => ({
     legacy: false,
-    locale: 'en',
+    locale: 'fa',
     messages: {
-        en: {
-            ...en
-        },
-        fa: {
-            ...fa
-        }
+        en: en,
+        fa: fa
     }
 }))
