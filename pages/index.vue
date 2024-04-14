@@ -12,7 +12,7 @@
 				</v-text-field>
 			</v-col>
 		</v-row>
-		<v-btn to="/docs" class="mt-5" color="primary">{{ $t("index.banner.start") }}</v-btn>
+		<v-btn to="/docs" class="mt-5" elevation="0" color="primary">{{ $t("index.banner.start") }}</v-btn>
 	</div>
 	<v-container class="mb-15">
 		<div class="home-content text-center">

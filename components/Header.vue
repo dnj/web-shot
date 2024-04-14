@@ -1,11 +1,11 @@
 <template>
 	<v-app-bar :elevation="0" color="white" density="comfortable" class=" px-5">
-		<NuxtLink :to="localePath('/')" class="toolbar-title"><v-app-bar-title>{{ $t("pages.index")
+		<NuxtLink :to="localePath('/')" class="toolbar-title me-3"><v-app-bar-title>{{ $t("pages.index")
 				}}</v-app-bar-title></NuxtLink>
 		<v-toolbar-items class="hidden-sm-and-down">
-			<v-btn :to="localePath('docs')" color="secondary">{{ $t("pages.docs") }}</v-btn>
-			<v-btn :to="localePath('gallery')" color="secondary">{{ $t("pages.gallery") }}</v-btn>
-			<v-btn :to="localePath('contact')" color="secondary">{{ $t("pages.contact") }}</v-btn>
+			<v-btn :to="localePath('docs')" class="mx-1" color="secondary">{{ $t("pages.docs") }}</v-btn>
+			<v-btn :to="localePath('gallery')" class="mx-1" color="secondary">{{ $t("pages.gallery") }}</v-btn>
+			<v-btn :to="localePath('contact')" class="mx-1" color="secondary">{{ $t("pages.contact") }}</v-btn>
 		</v-toolbar-items>
 		<v-spacer />
 		<v-menu>

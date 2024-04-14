@@ -4,8 +4,8 @@
             <div class="docs-title">{{ $t("documents.title") }}</div>
             <div class="docs-sub-title">{{ $t("documents.subtitle") }}</div>
             <div class="docs-content">{{ $t("documents.content") }}</div>
-            <v-text-field outlined class="mt-5" dir="ltr"></v-text-field>
-            <v-btn color="primary">{{ $t("documents.btn") }}</v-btn>
+            <v-text-field variant="outlined" class="mt-5" dir="ltr"></v-text-field>
+            <v-btn elevation="0" color="primary">{{ $t("documents.btn") }}</v-btn>
 
             <div class="docs-title2">{{ $t("documents.options.title") }}</div>
             <v-data-table :headers="headers" :items="tableData" class="mb-5">
