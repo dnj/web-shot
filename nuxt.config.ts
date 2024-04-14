@@ -20,26 +20,28 @@ export default defineNuxtConfig({
     //...
   ],
   i18n: {
-    vueI18n: './i18n.config.ts'
-  },
+    vueI18n: './i18n.config.ts',
+    locales: ['en', 'fa'],
+    defaultLocale: 'en',
+},
   vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
+  vue: {
+    template: {
+      transformAssetUrls,
     },
   },
+},
   nitro: {
-    storage: {
-      captures: {
-        driver: 'fs',
-        base: './.data/captures'
-      }
-    },
-    rollupConfig: {
-      plugins: [
-        image()
-      ]
+  storage: {
+    captures: {
+      driver: 'fs',
+      base: './.data/captures'
     }
+  },
+  rollupConfig: {
+    plugins: [
+      image()
+    ]
   }
+}
 })

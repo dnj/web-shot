@@ -9,9 +9,9 @@
                 </v-col>
                 <v-col sm="6" cols="12"
                     :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'left' : 'right'">
-                    <v-btn to="/docs" variant="text">{{ $t("pages.docs") }}</v-btn>
-                    <v-btn to="/gallery" variant="text">{{ $t("pages.gallery") }}</v-btn>
-                    <v-btn to="/contact" variant="text">{{ $t("pages.contact") }}</v-btn>
+                    <v-btn :to="localePath('docs')" variant="text">{{ $t("pages.docs") }}</v-btn>
+                    <v-btn :to="localePath('gallery')" variant="text">{{ $t("pages.gallery") }}</v-btn>
+                    <v-btn :to="localePath('contact')" variant="text">{{ $t("pages.contact") }}</v-btn>
                 </v-col>
             </v-row>
             <v-divider class="my-5"></v-divider>
@@ -19,6 +19,14 @@
         </div>
     </v-container>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
+    setup(){
+        return { localePath: useLocalePath() };
+    }
+})
+</script>
 <style lang="scss">
 .footer {
     .footer-sen {
