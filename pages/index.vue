@@ -1,5 +1,5 @@
 <template>
-	<div class="banner text-center py-15">
+	<div class="banner text-center pt-15 pb-5 px-5">
 		<h1>{{ $t("index.banner.title") }}</h1>
 		<div class="text-secondary"><strong>{{ $t("index.banner.subtitle") }}</strong></div>
 		<v-row justify="center" class="mt-5">
@@ -12,6 +12,7 @@
 				</v-text-field>
 			</v-col>
 		</v-row>
+		<Images :count="'120'" />
 		<v-btn to="/docs" class="mt-5" elevation="0" color="primary">{{ $t("index.banner.start") }}</v-btn>
 	</div>
 	<v-container class="mb-15">
@@ -36,9 +37,11 @@
 </template>
 <script lang="ts">
 import { useI18n } from '#imports'
-
+import Images from '~/components/Images.vue'
 export default defineComponent({
-	
+	components:{
+		Images
+	},
 	setup(){
 		const { t } = useI18n()
 		useHead({

@@ -1,27 +1,35 @@
 <template>
-    <v-container class="mb-15">
-        <div class="gallery">
-            <div class="gallery-title">{{ $t("gallery.title") }}</div>
-            <div class="gallery-content">
-                {{ $t("gallery.content.part1") +" "+ numberOfImages +" "+ $t("gallery.content.part2") +
-                    $t("gallery.content.part3")}}
-            </div>
+    <v-container class="gallery mb-15">
+        <div class="gallery-title">{{ $t("gallery.title") }}</div>
+        <div class="gallery-content">
+            {{ $t("gallery.content.part1") + " " + numberOfImages + " " + $t("gallery.content.part2") +
+            $t("gallery.content.part3") }}
         </div>
+        <Images @imagesNum="setImagesNum" :count="'120'" />
     </v-container>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useI18n } from '#imports'
+import Images from '~/components/Images.vue';
 export default defineComponent({
-    setup() {
+    
+    components:{
+        Images,
+    },
+    async setup() {
         const { t } = useI18n()
         useHead({
             title: t("pages.index") + " | " + t("pages.gallery")
-        })
+        });
     },
     data() {
         return {
-            numberOfImages: 0
+            numberOfImages: 0,
+        }
+    },
+    methods:{
+        setImagesNum(numberOfImages:number){
+            this.numberOfImages = numberOfImages;
         }
     }
 })
