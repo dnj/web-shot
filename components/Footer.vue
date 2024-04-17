@@ -9,16 +9,24 @@
                 </v-col>
                 <v-col sm="6" cols="12"
                     :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'left' : 'right'">
-                    <v-btn to="/docs" variant="text">مستندات</v-btn>
-                    <v-btn to="/gallery" variant="text">گالری</v-btn>
-                    <v-btn to="/contact" variant="text">تماس با ما</v-btn>
+                    <v-btn class="mx-1" :to="localePath('docs')" variant="text">{{ $t("pages.docs") }}</v-btn>
+                    <v-btn class="mx-1" :to="localePath('gallery')" variant="text">{{ $t("pages.gallery") }}</v-btn>
+                    <v-btn class="mx-1" :to="localePath('contact')" variant="text">{{ $t("pages.contact") }}</v-btn>
                 </v-col>
             </v-row>
             <v-divider class="my-5"></v-divider>
-            <div class="footer-sen">&copy; کلیه ی حقوق مادی و معنوی این سایت محفوظ می باشد.</div>
+            <div class="footer-sen">&copy; {{ $t("copy-right") }}</div>
         </div>
     </v-container>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
+    setup(){
+        return { localePath: useLocalePath() };
+    }
+})
+</script>
 <style lang="scss">
 .footer {
     .footer-sen {

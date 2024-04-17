@@ -1,16 +1,11 @@
 // import this after install `@mdi/font` package
 import '@mdi/font/css/materialdesignicons.css'
-
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 import "@/styles/main.scss";
 import { createVuetify } from 'vuetify';
-import { fa } from 'vuetify/locale';
 
 export default defineNuxtPlugin((app) => {
 	const vuetify = createVuetify({
-		locale: {
-			locale: 'fa',
-			messages: { fa },
-		},
 		theme: {
 			themes: {
 				light: {

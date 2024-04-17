@@ -1,25 +1,22 @@
 <template>
-    <v-container class="pb-15">
+    <v-container class="pt-15 pb-15">
         <v-row class="contact">
             <v-col md="6" cols="12" order="last" order-md="first">
+                <div class="title">{{ $t("contact.title") }}</div>
+                <div>{{ $t("contact.content") }}</div>
                 <div>
-                    <div class="title">ارتباط با ما</div>
-                    اگر سوال و یا نظری دارید میتوانید با ایمیل support@web-shot.ir در ارتباط باشد.<br />
-                    به فاصله ی یک روز کاری پاسختان را خواهیم داد.
-                </div>
-                <div>
-                    <div class="title mt-7">راه های ارتباطی</div>
-                    <v-row cols="6" dir="rtl">
+                    <div class="title mt-7">{{ $t("contact.subtitle") }}</div>
+                    <v-row cols="6">
                         <v-col cols="4">
-                            <div class="font-weight-bold">ایمیل:</div>
+                            <div class="font-weight-bold">{{ $t("contact.ways.email") }}</div>
                         </v-col>
                         <v-col cols="8">
                             <div>support@web-shot.ir</div>
                         </v-col>
                     </v-row>
-                    <v-row cols="12" dir="rtl">
+                    <v-row cols="12">
                         <v-col cols="4">
-                            <div class="font-weight-bold">تلفن:</div>
+                            <div class="font-weight-bold">{{ $t("contact.ways.phone") }}</div>
                         </v-col>
                         <v-col cols="8">
                             <div>031-34420301</div>
@@ -35,11 +32,13 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useI18n } from '#imports'
 
 export default defineComponent({
     setup(){
+        const { t } = useI18n()
         useHead({
-            title:'وب شات | تماس با ما'
+            title: t("pages.index") + " | " + t("pages.contact")
         })
     }
 })

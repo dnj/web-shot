@@ -1,16 +1,12 @@
 <template>
     <v-container class="mb-15">
         <div class="docs">
-            <div class="docs-title">مستندات رابط برنامه نویسی</div>
-            <div class="docs-sub-title">مثال آدرس اینترنتی</div>
-            <div class="docs-content">گزینه های اصلاح تصویر میتوانند به همراه آدرس وب سایت در آدرسی اینترنتی ارسال شوند.
-                در
-                زیر
-                لیستی کامل از گزینه ها را مشاهده می کنید:</div>
-            <v-text-field outlined class="mt-5" dir="ltr"></v-text-field>
-            <v-btn color="primary">مشاهده ی تصویر وب سایت</v-btn>
-
-            <div class="docs-title2">لیست کامل گزینه های اصلاح کننده تصویر</div>
+            <div class="docs-title">{{ $t("documents.title") }}</div>
+            <div class="docs-sub-title">{{ $t("documents.subtitle") }}</div>
+            <div class="docs-content">{{ $t("documents.content") }}</div>
+            <v-text-field variant="outlined" class="mt-5" dir="ltr" v-model="url"></v-text-field>
+            <v-btn elevation="0" color="primary" :href="getPublickEndPoint(`capture?url=${url}`)" target="_blank">{{ $t("documents.btn") }}</v-btn>
+            <div class="docs-title2">{{ $t("documents.options.title") }}</div>
             <v-data-table :headers="headers" :items="tableData" class="mb-5">
                 <template v-slot:item.required="{ value }">
                     <v-icon v-if="value" color="green" icon="mdi-checkbox-marked"></v-icon>
@@ -23,6 +19,8 @@
 <script lang="ts">
 
 import { defineComponent } from 'vue';
+import { useI18n } from '#imports';
+import { getPublickEndPoint } from '~/utilities';
 
 interface IData {
     option: string,
@@ -32,72 +30,75 @@ interface IData {
 }
 
 export default defineComponent({
-    setup(){
+    setup() {
+        const { t } = useI18n()
         useHead({
-            title: 'وب شات | مستندات'
+            title: t("pages.index") + " | " + t("pages.docs")
         })
+        return { getPublickEndPoint }
     },
     data() {
         return {
+            url: 'https://www.google.com&width=800&crop=600',
             headers: [
-                { title: 'گزینه', key: 'option' },
-                { title: 'نوع', key: 'type' },
-                { title: 'اجباری', key: 'required' },
-                { title: 'توضیحات', key: 'description' },
+                { title: this.$t("documents.options.table.header.options"), key: 'option' },
+                { title: this.$t("documents.options.table.header.type"), key: 'type' },
+                { title: this.$t("documents.options.table.header.required"), key: 'required' },
+                { title: this.$t("documents.options.table.header.description"), key: 'description' },
             ],
             tableData: [{
                 option: 'url',
-                type: 'رشته',
+                type: this.$t("documents.options.table.content.string"),
                 required: true,
-                description: 'آدرس اینترنتی وبسایت مقصد',
+                description: this.$t("documents.options.table.content.description.url"),
             },
             {
                 option: 'width',
-                type: 'عدد در واحد پیکسل',
+                type: this.$t("documents.options.table.content.number"),
                 required: false,
-                description: 'عرض تصویر (پیشفرض: 600px)',
+                description: this.$t("documents.options.table.content.description.width"),
             },
             {
                 option: 'crop',
-                type: 'عدد در واحد پیکسل',
+                type: this.$t("documents.options.table.content.number"),
                 required: false,
-                description: 'ارتفاع تصویر (پیشفرض: 1200px)',
+                description: this.$t("documents.options.table.content.description.height"),
             },
             {
                 option: 'maxAge',
-                type: 'عدد در واحد ثانیه',
+                type: this.$t("documents.options.table.content.number"),
                 required: false,
-                description: 'مقدار زمان مشخص برای بروزرسانی تصویر ذخیره شده',
+                description: this.$t("documents.options.table.content.description.maxAge"),
             },
             {
                 option: 'format',
-                type: 'jpg | png',
+                type: this.$t("documents.options.table.content.string"),
                 required: false,
-                description: 'نوع تصویر',
+                description: this.$t("documents.options.table.content.description.format")
             },
             {
                 option: 'fullPage',
                 type: 'true | false',
                 required: false,
-                description: 'تصویر شامل کل صفحه ی وب سایت باشد یا خیر',
+                description: this.$t("documents.options.table.content.description.fullPage"),
             },
             {
-                option: 'wait',
-                type: 'عدد در واحد ثانیه، کمترین مقدار: 1ثانیه، بیشترین مقدار: 30ثانیه',
+                option: 'timeout',
+                type: this.$t("documents.options.table.content.number"),
                 required: false,
-                description: 'مدت زمان انظار بعد از بارگزاری صفحه و تهیه تصویر بعد از زمان(پیشفرض: 0ثانیه)',
+                description: this.$t("documents.options.table.content.description.timeout"),
             },
             {
                 option: 'viewportWidth',
-                type: 'عدد در واحد پیکسل',
+                type: this.$t("documents.options.table.content.number"),
                 required: false,
-                description: 'تصویر صفحه وب سایت در عرض مشخص شده ذخیره خواهد شد.'
+                description: this.$t("documents.options.table.content.description.viewportWidth")
             },
             {
                 option: 'viewportHeight',
-                type: 'عدد در واحد پیکسل',
+                type: this.$t("documents.options.table.content.number"),
                 required: false,
-                description: 'تصویر صفحه وب سایت در ارتفاع مشخص شده ذخیره خواهد شد.'
+                description: this.$t("documents.options.table.content.description.viewportHeight")
             }
             ] as IData[]
         }
@@ -127,7 +128,8 @@ export default defineComponent({
     }
 
     .docs-content {
-        color: rgb(var(--v-theme-contentGray));;
+        color: rgb(var(--v-theme-contentGray));
+        ;
     }
 
     .docs-title2 {

@@ -1,9 +1,21 @@
 <template>
-  <NuxtLayout>
-    <v-app>
-      <v-locale-provider :rtl="$vuetify.locale.isRtl">
+  <v-app>
+    <v-locale-provider :rtl="isRTL">
+      <NuxtLayout>
         <NuxtPage />
-      </v-locale-provider>
-    </v-app>
-  </NuxtLayout>
+      </NuxtLayout>
+    </v-locale-provider>
+  </v-app>
 </template>
+<script lang="ts">
+export default defineComponent({
+  setup() {
+    return { locale: useI18n().locale };
+  },
+  computed: {
+    isRTL() {
+      return ["fa", "ar"].includes(this.locale);
+    }
+  }
+})
+</script>
