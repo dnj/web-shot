@@ -6,7 +6,7 @@
 			<v-col lg="5" md="8" sm="10" cols="11">
 				<v-text-field variant="outlined" dir="ltr" class="px-0">
 					<template v-slot:append-inner>
-						<v-btn color="primary" height="100%" class="font-weight-bold">مشاهده تصویر</v-btn>
+						<v-btn color="primary" height="100%" elevation="0" class="font-weight-bold">مشاهده تصویر</v-btn>
 					</template>
 				</v-text-field>
 			</v-col>
@@ -31,8 +31,8 @@
 			<div class="content">گزینه های پیشرفته تر نیز وجود دارد، شما می توانید با تعیین عرض مشخصه تصویر را تغییر
 				دهید و
 				شما می توانید تعداد پیکسل های وب سایت اصلی که می خواهید برش دهید تعیین کنید. مثلا:</div>
-			<div class="code-background" dir="ltr">{{ `<img
-					src="${getCaptureURL({width: '100', crop: '600'})}">` }}</div>
+			<div class="code-background" dir="ltr">{{ `<img src="${getCaptureURL({ width: '100', crop: '600' })}">` }}
+			</div>
 			<div class="content">گرفتن عکسهای صفحه وب از یک مرورگر پیکسل 1200x1200 گرفته شده است. کد بالا، صفحه نمایش
 				اصلی
 				را به 100 پیکسل عرض می برد و سپس 600 پیکسل از تصویر را می برد.</div>
@@ -42,9 +42,16 @@
 </template>
 <script lang="ts">
 
-export default defineComponent({ 
+export default defineComponent({
+	setup(){
+		useHead({
+			title:'وب شات'
+		})
+	},
 	data() {
-		return {url: ""};
+		return {
+			url: "",
+		 };
 	},
 	methods: {
 		getCaptureURL(query?: Record<string, string>) {
@@ -53,7 +60,7 @@ export default defineComponent({
 			const location = useRequestURL();
 			return new URL((location.protocol || "http:") + "//" + location.host + "/capture?" + params);
 		}
-	}
+	},
 })
 </script>
 <style lang="scss">
@@ -68,9 +75,10 @@ export default defineComponent({
 		.v-field--appended {
 			padding-inline-end: 0px;
 		}
-	}
-}
 
+	}
+
+}
 .home-content {
 
 	.title-of-content {
@@ -82,7 +90,8 @@ export default defineComponent({
 	}
 
 	.content {
-		color: rgb(var(--v-theme-contentGray));;
+		color: rgb(var(--v-theme-contentGray));
+		;
 		margin-bottom: 25px;
 	}
 
@@ -104,6 +113,7 @@ export default defineComponent({
 	--v-input-control-height: 0px;
 	--v-field-padding-start: 20px;
 }
+
 .v-input.v-textarea>.v-input__control>.v-input__slot:before {
 	border: none;
 }

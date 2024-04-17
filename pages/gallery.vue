@@ -10,6 +10,16 @@
         </div>
     </v-container>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
+    setup(){
+        useHead({
+            title: 'وب شات | گالری'
+        })
+    }
+})
+</script>
 <style lang="scss">
 .gallery {
     text-align: center;
