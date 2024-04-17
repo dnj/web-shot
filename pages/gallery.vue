@@ -5,15 +5,21 @@
             {{ $t("gallery.content.part1") + " " + numberOfImages + " " + $t("gallery.content.part2") +
             $t("gallery.content.part3") }}
         </div>
-        <Images @imagesNum="setImagesNum" :count="'120'" />
+        <Images :images="images" :pending="pending" :error="error" />
     </v-container>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Images from '~/components/Images.vue';
+import { getPublickEndPoint } from '~/utilities';
+interface IImage {
+    id?: number;
+    url: string;
+}
+
 export default defineComponent({
-    
-    components:{
+
+    components: {
         Images,
     },
     async setup() {
@@ -21,17 +27,29 @@ export default defineComponent({
         useHead({
             title: t("pages.index") + " | " + t("pages.gallery")
         });
+
+        let images: IImage[] | undefined;
+        let pending: boolean = true;
+        let error: boolean = false;
+
+        try {
+            const params = new URLSearchParams({ 'count': '120' });
+            images = await $fetch(getPublickEndPoint(`api/gallery?${params.toString()}`));
+        }
+        catch {
+            error = true;
+        }
+        finally {
+            pending = false;
+        }
+        return { images, error, pending, getPublickEndPoint };
+
     },
     data() {
         return {
-            numberOfImages: 0,
+            numberOfImages: this.images ? this.images.length : 0,
         }
     },
-    methods:{
-        setImagesNum(numberOfImages:number){
-            this.numberOfImages = numberOfImages;
-        }
-    }
 })
 </script>
 <style lang="scss">

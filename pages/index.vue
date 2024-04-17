@@ -4,16 +4,24 @@
 		<div class="text-secondary"><strong>{{ $t("index.banner.subtitle") }}</strong></div>
 		<v-row justify="center" class="mt-5">
 			<v-col lg="5" md="8" sm="10" cols="11">
-				<v-text-field variant="outlined" dir="ltr" class="px-0">
+				<v-text-field variant="outlined" dir="ltr" v-model="inputUrl" class="px-0">
 					<template v-slot:append-inner>
-						<v-btn color="primary" height="100%" elevation="0" class="font-weight-bold">{{
+						<v-btn color="primary" height="100%" elevation="0" class="font-weight-bold" @click="onSubmit">{{
 							$t("index.banner.capture") }}</v-btn>
 					</template>
 				</v-text-field>
 			</v-col>
 		</v-row>
-		<Images :count="'120'" />
-		<v-btn to="/docs" class="mt-5" elevation="0" color="primary">{{ $t("index.banner.start") }}</v-btn>
+		<v-row align="center" justify="center">
+			<v-col cols="6">
+				<a :href="url" target="_blank"><img v-if="response"
+						:src="getPublickEndPoint(`capture?url=${url}&width=550&height=350`)"></img></a>
+			</v-col>
+		</v-row>
+
+		<Images :images="images" :pending="pending" :error="error" :key="componentKey" />
+		<v-btn :to="localePath('docs')" class="mt-5" elevation="0" color="primary">{{ $t("index.banner.start")
+			}}</v-btn>
 	</div>
 	<v-container class="mb-15">
 		<div class="home-content text-center">
@@ -31,35 +39,79 @@
 			<div class="code-background" dir="ltr">{{ `<img src="${getCaptureURL({ width: '100', crop: '600' })}">` }}
 			</div>
 			<div class="content">{{ $t("index.options.code-explanation") }}</div>
-			<v-btn variant="text" color="primary">{{ $t("index.options.button") }}</v-btn>
+			<v-btn variant="text" color="primary" :to="localePath('docs')">{{ $t("index.options.button") }}</v-btn>
 		</div>
 	</v-container>
 </template>
 <script lang="ts">
 import { useI18n } from '#imports'
-import Images from '~/components/Images.vue'
+import Images from '~/components/Images.vue';
+import { ref } from 'vue';
+import { getPublickEndPoint } from '~/utilities';
+
+interface IImage {
+	id?: number;
+	url: string;
+}
+
 export default defineComponent({
-	components:{
+	components: {
 		Images
 	},
-	setup(){
+	async setup() {
 		const { t } = useI18n()
 		useHead({
 			title: t("pages.index")
 		})
+		let images: IImage[] | undefined;
+		let pending: boolean = true;
+		let error: boolean = false;
+
+		try {
+			const params = new URLSearchParams({ 'count': '24' });
+			images = await $fetch(getPublickEndPoint(`api/gallery?${params.toString()}`));
+		}
+		catch {
+			error = true;
+		}
+		finally {
+			pending = false;
+		}
+
+		return { images, error, pending, localePath: useLocalePath(), getPublickEndPoint };
 	},
 	data() {
 		return {
-			url: "",
-			title: this.$t("pages.index")
-		 };
+			inputUrl: "https://www.google.com",
+			url: "https://www.google.com",
+			title: this.$t("pages.index"),
+			error: false,
+			pending: true,
+			response: false,
+			componentKey : ref(0)
+		};
 	},
 	methods: {
 		getCaptureURL(query?: Record<string, string>) {
-			const url = this.url || "https://www.google.com/";
+			const url = this.url;
 			const params = (new URLSearchParams(Object.assign({ url: url }, query))).toString().replaceAll("%2F", "/").replaceAll("%3A", ":");
 			const location = useRequestURL();
 			return new URL((location.protocol || "http:") + "//" + location.host + "/capture?" + params);
+		},
+		async onSubmit() {
+			this.response = true;
+			this.url = this.inputUrl;
+			if (this.images){
+				if (this.images[0].url !== this.inputUrl){
+					this.images.unshift({ url: this.inputUrl })
+				}
+			}else{
+				this.images = [{ url: this.inputUrl }]
+			}
+			this.forceRerender();
+		},
+		forceRerender() {
+			this.componentKey += 1;
 		}
 	},
 })
@@ -76,10 +128,9 @@ export default defineComponent({
 		.v-field--appended {
 			padding-inline-end: 0px;
 		}
-
 	}
-
 }
+
 .home-content {
 
 	.title-of-content {

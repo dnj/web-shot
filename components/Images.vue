@@ -1,8 +1,12 @@
 <template>
-    <v-row v-if="images" class="my-2">
-        <v-col class="pa-2" cols="1" v-for="image in images" :key="image.id">
-            <a :href="image.url" target="_blank"><v-img
-                    :src="`https://web-shot.ir/api/gallery/${image.id}?width=200&height=150`"></v-img></a>
+    <v-row v-if="images && !error" class="my-2" justify="center">
+        <v-col class="pa-2" cols="1" v-for="(image, i) in images" :key="i">
+            <a :href="image.url" target="_blank">
+                <v-img v-if="image.id"
+                    :src="getPublickEndPoint(`api/gallery/${image.id}?width=200&height=150`)"></v-img>
+                <v-img v-if="!image.id"
+                    :src="getPublickEndPoint(`capture?url=${image.url}&width=200&height=150`)"></v-img>
+            </a>
         </v-col>
     </v-row>
     <v-progress-circular v-if="pending" indeterminate class="my-5" color="primary" />
@@ -10,43 +14,22 @@
         closable></v-alert>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-
+import type { PropType } from 'vue'
+import { getPublickEndPoint } from '~/utilities';
 interface IImage {
-    id: number;
+    id?: number;
     url: string;
 }
-
 export default defineComponent({
-    async setup(app) {
-        let images: IImage[] | undefined;
-        let pending: boolean = true;
-        let error: boolean = false;
-        try {
-            const params = new URLSearchParams({ 'count': app.count });
-            images = await $fetch(`https://web-shot.ir/api/gallery?${params.toString()}`);
-        }
-        catch {
-            error = true;
-        }
-        finally{
-            pending = false;
-        }
-        return { images, error, pending };
+    setup() {
+        return { getPublickEndPoint };
     },
-    props:{
-        count: {
-            type: String,
-            required: true
-        }
+    props: {
+        images: {
+            type: Array as PropType<IImage[]>
+        },
+        pending: Boolean,
+        error: Boolean
     },
-    created(){
-        this.sendImageNum();
-    },
-    methods:{
-        sendImageNum(){
-            this.$emit("imagesNum", this.images ? this.images.length : 0)
-        }
-    }
 })
 </script>

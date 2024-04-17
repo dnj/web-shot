@@ -4,9 +4,8 @@
             <div class="docs-title">{{ $t("documents.title") }}</div>
             <div class="docs-sub-title">{{ $t("documents.subtitle") }}</div>
             <div class="docs-content">{{ $t("documents.content") }}</div>
-            <v-text-field variant="outlined" class="mt-5" dir="ltr"></v-text-field>
-            <v-btn elevation="0" color="primary">{{ $t("documents.btn") }}</v-btn>
-
+            <v-text-field variant="outlined" class="mt-5" dir="ltr" v-model="url"></v-text-field>
+            <v-btn elevation="0" color="primary" :href="getPublickEndPoint(`capture?url=${url}`)" target="_blank">{{ $t("documents.btn") }}</v-btn>
             <div class="docs-title2">{{ $t("documents.options.title") }}</div>
             <v-data-table :headers="headers" :items="tableData" class="mb-5">
                 <template v-slot:item.required="{ value }">
@@ -20,7 +19,8 @@
 <script lang="ts">
 
 import { defineComponent } from 'vue';
-import { useI18n } from '#imports'
+import { useI18n } from '#imports';
+import { getPublickEndPoint } from '~/utilities';
 
 interface IData {
     option: string,
@@ -35,9 +35,11 @@ export default defineComponent({
         useHead({
             title: t("pages.index") + " | " + t("pages.docs")
         })
+        return { getPublickEndPoint }
     },
     data() {
         return {
+            url: 'https://www.google.com&width=800&crop=600',
             headers: [
                 { title: this.$t("documents.options.table.header.options"), key: 'option' },
                 { title: this.$t("documents.options.table.header.type"), key: 'type' },
