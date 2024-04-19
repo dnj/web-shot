@@ -72,10 +72,11 @@ class BroswerWrapper {
 	private goto(page: Page, options:IScreenshotOptions): Promise<void> {
 		return new Promise((resolve, reject) => {
 			page.on("requestfailed", (request) => {
-				console.log(request);
 				const url = request.url();
-				const failure = request.failure();
-				reject(new NavigationError(failure?.errorText || "UNKNOWN_ERROR", url));
+				if (url === options.url) {
+					const failure = request.failure();
+					reject(new NavigationError(failure?.errorText || "UNKNOWN_ERROR", url));
+				}
 			});
 			page.goto(options.url, { waitUntil: "networkidle2", timeout: options.timeout }).then(() => resolve(), reject);
 		})
