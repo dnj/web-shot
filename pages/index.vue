@@ -6,22 +6,14 @@
 			<v-col lg="5" md="8" sm="10" cols="11">
 				<v-text-field variant="outlined" dir="ltr" v-model="inputUrl" class="px-0">
 					<template v-slot:append-inner>
-						<v-btn color="primary" height="100%" elevation="0" class="font-weight-bold" @click="onSubmit">{{
-							$t("index.banner.capture") }}</v-btn>
+						<v-btn color="primary" height="100%" elevation="0" class="font-weight-bold" @click="onSubmit">{{$t("index.banner.capture") }}</v-btn>
 					</template>
 				</v-text-field>
 			</v-col>
 		</v-row>
-		<v-row align="center" justify="center">
-			<v-col cols="6">
-				<a :href="url" target="_blank"><img v-if="response"
-						:src="getPublickEndPoint(`capture?url=${url}&width=550&height=350`)"></img></a>
-			</v-col>
-		</v-row>
 
-		<Images :images="images" :pending="pending" :error="error" :key="componentKey" />
-		<v-btn :to="localePath('docs')" class="mt-5" elevation="0" color="primary">{{ $t("index.banner.start")
-			}}</v-btn>
+		<Images :images="images" :error="error" :width="150" :height="75" />
+		<v-btn :to="localePath('docs')" class="mt-5" elevation="0" color="primary">{{ $t("index.banner.start") }}</v-btn>
 	</div>
 	<v-container class="mb-15">
 		<div class="home-content text-center">
@@ -32,11 +24,11 @@
 			<div class="title-of-content">{{ $t("index.how-to-use.title") }}</div>
 			<div class="content">{{ $t("index.how-to-use.content") }}</div>
 			<div class="code-background" dir="ltr">
-				&lt;img src="{{ getCaptureURL() }}"&gt;
+				&lt;img src="{{ getCaptureURL(inputUrl) }}"&gt;
 			</div>
 			<div class="title-of-content">{{ $t("index.options.title") }}</div>
 			<div class="content">{{ $t("index.options.content") }}</div>
-			<div class="code-background" dir="ltr">{{ `<img src="${getCaptureURL({ width: '100', crop: '600' })}">` }}
+			<div class="code-background" dir="ltr">{{ `<img src="${getCaptureURL(inputUrl, { width: '100', height: '600' })}">` }}
 			</div>
 			<div class="content">{{ $t("index.options.code-explanation") }}</div>
 			<v-btn variant="text" color="primary" :to="localePath('docs')">{{ $t("index.options.button") }}</v-btn>
@@ -45,14 +37,9 @@
 </template>
 <script lang="ts">
 import { useI18n } from '#imports'
-import Images from '~/components/Images.vue';
-import { ref } from 'vue';
-import { getPublickEndPoint } from '~/utilities';
+import Images, { fetchGallery, type IImage } from '~/components/Images.vue';
 
-interface IImage {
-	id?: number;
-	url: string;
-}
+const IMAGES_COUNT = 8;
 
 export default defineComponent({
 	components: {
@@ -63,57 +50,38 @@ export default defineComponent({
 		useHead({
 			title: t("pages.index")
 		})
-		let images: IImage[] | undefined;
-		let pending: boolean = true;
+		let gallery: IImage[] = [];
 		let error: boolean = false;
 
 		try {
-			const params = new URLSearchParams({ 'count': '24' });
-			images = await $fetch(getPublickEndPoint(`api/gallery?${params.toString()}`));
-		}
-		catch {
+			gallery = await fetchGallery(IMAGES_COUNT);
+		} catch {
 			error = true;
 		}
-		finally {
-			pending = false;
-		}
 
-		return { images, error, pending, localePath: useLocalePath(), getPublickEndPoint };
+		return { gallery, error, localePath: useLocalePath() };
 	},
 	data() {
 		return {
 			inputUrl: "https://www.google.com",
-			url: "https://www.google.com",
 			title: this.$t("pages.index"),
 			error: false,
-			pending: true,
-			response: false,
-			componentKey : ref(0)
+			captures: [] as IImage[]
 		};
 	},
 	methods: {
-		getCaptureURL(query?: Record<string, string>) {
-			const url = this.url;
-			const params = (new URLSearchParams(Object.assign({ url: url }, query))).toString().replaceAll("%2F", "/").replaceAll("%3A", ":");
-			const location = useRequestURL();
-			return new URL((location.protocol || "http:") + "//" + location.host + "/capture?" + params);
-		},
 		async onSubmit() {
-			this.response = true;
-			this.url = this.inputUrl;
-			if (this.images){
-				if (this.images[0].url !== this.inputUrl){
-					this.images.unshift({ url: this.inputUrl })
-				}
-			}else{
-				this.images = [{ url: this.inputUrl }]
-			}
-			this.forceRerender();
+			this.captures.unshift({
+				url: this.inputUrl,
+				date: new Date(),
+			});
 		},
-		forceRerender() {
-			this.componentKey += 1;
-		}
 	},
+	computed: {
+		images(): IImage[] {
+			return [...this.captures, ...this.gallery].slice(0, IMAGES_COUNT);
+		}
+	}
 })
 </script>
 <style lang="scss">

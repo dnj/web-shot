@@ -5,7 +5,7 @@
 			<slot />
 		</v-main>
 	</v-layout>
-		<Footer />
+	<Footer />
 </template>
 <script lang="ts">
 import Header from '~/components/Header.vue';

@@ -1,35 +1,66 @@
 <template>
-    <v-row v-if="images && !error" class="my-2" justify="center">
-        <v-col class="pa-2" cols="1" v-for="(image, i) in images" :key="i">
-            <a :href="image.url" target="_blank">
-                <v-img v-if="image.id"
-                    :src="getPublickEndPoint(`api/gallery/${image.id}?width=200&height=150`)"></v-img>
-                <v-img v-if="!image.id"
-                    :src="getPublickEndPoint(`capture?url=${image.url}&width=200&height=150`)"></v-img>
-            </a>
-        </v-col>
-    </v-row>
-    <v-progress-circular v-if="pending" indeterminate class="my-5" color="primary" />
+    <div v-if="images && !error" class="my-2" justify="center">
+        <a v-for="(image, i) in images" :key="getId(image, i)" :href="image.url" target="_blank">
+            <img :src="getImageURL(image)" :width="width" :height="height"></img>
+        </a>
+    </div>
     <v-alert class="my-5 text-start" v-if="error" :text="$t('fetch-data.error.server')" type="error" variant="tonal"
         closable></v-alert>
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { getPublickEndPoint } from '~/utilities';
-interface IImage {
+
+export interface IImage {
     id?: number;
+    date?: Date;
     url: string;
 }
+
+export function fetchGallery(count: number): Promise<IImage[]> {
+    const q = new URLSearchParams({ count: count.toString() });
+    return $fetch<IImage[]>(`/api/gallery?${q}`);
+}
+
 export default defineComponent({
-    setup() {
-        return { getPublickEndPoint };
-    },
     props: {
         images: {
             type: Array as PropType<IImage[]>
         },
-        pending: Boolean,
+        width: {
+            type: Number,
+            default: 100
+        },
+        height: {
+            type: Number,
+            default: 50
+        },
         error: Boolean
     },
+    methods: {
+        getImageURL(image: IImage): string {
+            const q = new URLSearchParams({
+                width: this.width.toString(),
+                height: this.height.toString()
+            });
+            let url: string;
+            if (image.id !== undefined) {
+                url = `/api/gallery/${image.id}`;
+            } else {
+                q.set("url", image.url);
+                url = "/capture";
+            }
+            return `${url}?${q}`;
+        },
+        getId(image: IImage, index: number): number|string {
+            if (image.id !== undefined) {
+                return `id-${image.id}`;
+            }
+            if (image.date !== undefined) {
+                return `date-${image.date.getTime()}`;
+            }
+
+            return `index-${index}`;
+        }
+    }
 })
 </script>

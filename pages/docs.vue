@@ -5,7 +5,7 @@
             <div class="docs-sub-title">{{ $t("documents.subtitle") }}</div>
             <div class="docs-content">{{ $t("documents.content") }}</div>
             <v-text-field variant="outlined" class="mt-5" dir="ltr" v-model="url"></v-text-field>
-            <v-btn elevation="0" color="primary" :href="getPublickEndPoint(`capture?url=${url}`)" target="_blank">{{ $t("documents.btn") }}</v-btn>
+            <v-btn elevation="0" color="primary" :href="getCaptureURL(url)" target="_blank">{{ $t("documents.btn") }}</v-btn>
             <div class="docs-title2">{{ $t("documents.options.title") }}</div>
             <v-data-table :headers="headers" :items="tableData" class="mb-5">
                 <template v-slot:item.required="{ value }">
@@ -20,10 +20,10 @@
 
 import { defineComponent } from 'vue';
 import { useI18n } from '#imports';
-import { getPublickEndPoint } from '~/utilities';
+import { getCaptureURL } from '~/utils/index';
 
 interface IData {
-    option: string,
+    name: string,
     type: string,
     required: boolean,
     description: string,
@@ -35,74 +35,74 @@ export default defineComponent({
         useHead({
             title: t("pages.index") + " | " + t("pages.docs")
         })
-        return { getPublickEndPoint }
+        return { getCaptureURL }
     },
     data() {
         return {
-            url: 'https://www.google.com&width=800&crop=600',
+            url: 'https://www.google.com',
             headers: [
-                { title: this.$t("documents.options.table.header.options"), key: 'option' },
+                { title: this.$t("documents.options.table.header.name"), key: 'name' },
                 { title: this.$t("documents.options.table.header.type"), key: 'type' },
                 { title: this.$t("documents.options.table.header.required"), key: 'required' },
                 { title: this.$t("documents.options.table.header.description"), key: 'description' },
             ],
             tableData: [{
-                option: 'url',
+                name: 'url',
                 type: this.$t("documents.options.table.content.string"),
                 required: true,
                 description: this.$t("documents.options.table.content.description.url"),
             },
             {
-                option: 'width',
+                name: 'width',
                 type: this.$t("documents.options.table.content.number"),
                 required: false,
                 description: this.$t("documents.options.table.content.description.width"),
             },
             {
-                option: 'crop',
+                name: 'height',
                 type: this.$t("documents.options.table.content.number"),
                 required: false,
                 description: this.$t("documents.options.table.content.description.height"),
             },
             {
-                option: 'maxAge',
+                name: 'maxAge',
                 type: this.$t("documents.options.table.content.number"),
                 required: false,
                 description: this.$t("documents.options.table.content.description.maxAge"),
             },
             {
-                option: 'format',
+                name: 'format',
                 type: this.$t("documents.options.table.content.string"),
                 required: false,
                 description: this.$t("documents.options.table.content.description.format")
             },
             {
-                option: 'fullPage',
+                name: 'fullpage',
                 type: 'true | false',
                 required: false,
-                description: this.$t("documents.options.table.content.description.fullPage"),
+                description: this.$t("documents.options.table.content.description.fullpage"),
             },
             {
-                option: 'timeout',
+                name: 'timeout',
                 type: this.$t("documents.options.table.content.number"),
                 required: false,
                 description: this.$t("documents.options.table.content.description.timeout"),
             },
             {
-                option: 'viewportWidth',
+                name: 'viewportWidth',
                 type: this.$t("documents.options.table.content.number"),
                 required: false,
                 description: this.$t("documents.options.table.content.description.viewportWidth")
             },
             {
-                option: 'viewportHeight',
+                name: 'viewportHeight',
                 type: this.$t("documents.options.table.content.number"),
                 required: false,
                 description: this.$t("documents.options.table.content.description.viewportHeight")
             }
             ] as IData[]
         }
-    }
+    },
 })
 </script>
 <style lang="scss">
@@ -129,7 +129,6 @@ export default defineComponent({
 
     .docs-content {
         color: rgb(var(--v-theme-contentGray));
-        ;
     }
 
     .docs-title2 {

@@ -11,7 +11,7 @@
                             <div class="font-weight-bold">{{ $t("contact.ways.email") }}</div>
                         </v-col>
                         <v-col cols="8">
-                            <div>support@web-shot.ir</div>
+                            <div class="ltr">hi@web-shot.ir</div>
                         </v-col>
                     </v-row>
                     <v-row cols="12">
@@ -19,7 +19,7 @@
                             <div class="font-weight-bold">{{ $t("contact.ways.phone") }}</div>
                         </v-col>
                         <v-col cols="8">
-                            <div>031-34420301</div>
+                            <div class="ltr">(+98)31-34420301</div>
                         </v-col>
                     </v-row>
                 </div>
@@ -55,6 +55,9 @@ export default defineComponent({
         color: rgb(var(--v-theme-titleGray));
         font-weight: 900;
         font-size: 19px;
+    }
+    .ltr {
+        direction: ltr;
     }
 }
 </style>
