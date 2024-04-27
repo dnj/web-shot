@@ -24,6 +24,8 @@
     "documents.options.table.header.name": "Name",
     "documents.options.table.header.type": "Type",
     "documents.options.table.header.required": "Required",
+    "documents.options.table.header.default-value": "Default Value",
+    "documents.options.table.header.value": "Value",
     "documents.options.table.header.description": "Description",
     "documents.options.table.content.string": "string",
     "documents.options.table.content.number": "number",
