@@ -24,6 +24,8 @@
     "documents.options.table.header.name": "گزینه",
     "documents.options.table.header.type": "نوع",
     "documents.options.table.header.required": "اجباری",
+    "documents.options.table.header.default-value": "مقدار پیش فرض",
+    "documents.options.table.header.value": "مقدار",
     "documents.options.table.header.description": "توضیحات",
     "documents.options.table.content.string": "رشته",
     "documents.options.table.content.number": "عدد",

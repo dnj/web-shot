@@ -4,13 +4,31 @@
             <div class="docs-title">{{ $t("documents.title") }}</div>
             <div class="docs-sub-title">{{ $t("documents.subtitle") }}</div>
             <div class="docs-content">{{ $t("documents.content") }}</div>
-            <v-text-field variant="outlined" class="mt-5" dir="ltr" v-model="url"></v-text-field>
-            <v-btn elevation="0" color="primary" :href="getCaptureURL(url)" target="_blank">{{ $t("documents.btn") }}</v-btn>
+            <v-text-field variant="outlined" class="my-5" dir="ltr" v-model="url"></v-text-field>
+            <v-btn elevation="0" color="primary" :href="getCaptureURL(inputData.url)" target="_blank">{{
+                $t("documents.btn")
+                }}</v-btn>
             <div class="docs-title2">{{ $t("documents.options.title") }}</div>
             <v-data-table :headers="headers" :items="tableData" class="mb-5">
                 <template v-slot:item.required="{ value }">
                     <v-icon v-if="value" color="green" icon="mdi-checkbox-marked"></v-icon>
                     <v-icon v-if="!value" color="red" icon="mdi-close-thick"></v-icon>
+                </template>
+                <template v-slot:item.value="{ item }">
+                    <v-text-field variant="outlined" v-model="inputData[item.name]"
+                        v-if="['url', 'width', 'height', 'maxAge', 'timeout', 'viewportWidth', 'viewportHeight'].includes(item.name)"></v-text-field>
+                    <v-checkbox class="my-2 checkbox" label="Yes" v-if="item.name === 'fullpage'"
+                        v-model="inputData.fullpage"></v-checkbox>
+                    <v-radio-group class="radiogroup" v-if="item.name === 'format'" v-model="inputData.format">
+                        <v-row>
+                            <v-col>
+                                <v-radio label="jpeg" value="jpeg"></v-radio>
+                            </v-col>
+                            <v-col>
+                                <v-radio label="png" value="png"></v-radio>
+                            </v-col>
+                        </v-row>
+                    </v-radio-group>
                 </template>
             </v-data-table>
         </div>
@@ -26,7 +44,21 @@ interface IData {
     name: string,
     type: string,
     required: boolean,
+    default: string,
     description: string,
+    value: string,
+}
+
+interface IInput {
+    url: string,
+    width: number,
+    height: number,
+    maxAge: number,
+    format: string,
+    fullpage: boolean,
+    timeout: number,
+    viewportWidth: number,
+    viewportHeight: number
 }
 
 export default defineComponent({
@@ -39,70 +71,134 @@ export default defineComponent({
     },
     data() {
         return {
-            url: 'https://www.google.com',
+            radios: 'jpeg',
             headers: [
                 { title: this.$t("documents.options.table.header.name"), key: 'name' },
                 { title: this.$t("documents.options.table.header.type"), key: 'type' },
                 { title: this.$t("documents.options.table.header.required"), key: 'required' },
-                { title: this.$t("documents.options.table.header.description"), key: 'description' },
+                { title: this.$t("documents.options.table.header.default-value"), key: 'default' },
+                { title: this.$t("documents.options.table.header.description"), key: 'description', width: '30%' },
+                { title: this.$t("documents.options.table.header.value"), key: 'value', width: '20%' },
             ],
-            tableData: [{
-                name: 'url',
-                type: this.$t("documents.options.table.content.string"),
-                required: true,
-                description: this.$t("documents.options.table.content.description.url"),
-            },
-            {
-                name: 'width',
-                type: this.$t("documents.options.table.content.number"),
-                required: false,
-                description: this.$t("documents.options.table.content.description.width"),
-            },
-            {
-                name: 'height',
-                type: this.$t("documents.options.table.content.number"),
-                required: false,
-                description: this.$t("documents.options.table.content.description.height"),
-            },
-            {
-                name: 'maxAge',
-                type: this.$t("documents.options.table.content.number"),
-                required: false,
-                description: this.$t("documents.options.table.content.description.maxAge"),
-            },
-            {
-                name: 'format',
-                type: this.$t("documents.options.table.content.string"),
-                required: false,
-                description: this.$t("documents.options.table.content.description.format")
-            },
-            {
-                name: 'fullpage',
-                type: 'true | false',
-                required: false,
-                description: this.$t("documents.options.table.content.description.fullpage"),
-            },
-            {
-                name: 'timeout',
-                type: this.$t("documents.options.table.content.number"),
-                required: false,
-                description: this.$t("documents.options.table.content.description.timeout"),
-            },
-            {
-                name: 'viewportWidth',
-                type: this.$t("documents.options.table.content.number"),
-                required: false,
-                description: this.$t("documents.options.table.content.description.viewportWidth")
-            },
-            {
-                name: 'viewportHeight',
-                type: this.$t("documents.options.table.content.number"),
-                required: false,
-                description: this.$t("documents.options.table.content.description.viewportHeight")
-            }
-            ] as IData[]
+            inputData: {
+                url: 'https://www.google.com',
+                width: 1200,
+                height: 600,
+                maxAge: 86400,
+                format: 'jpeg',
+                fullpage: false,
+                timeout: 10000,
+                viewportWidth: 1200,
+                viewportHeight: 600
+            } as IInput
         }
     },
+    computed: {
+        tableData(): IData[] {
+            return [
+                {
+                    name: 'url',
+                    type: this.$t("documents.options.table.content.string"),
+                    required: true,
+                    default: '-',
+                    description: this.$t("documents.options.table.content.description.url"),
+                    value: this.url
+                },
+                {
+                    name: 'width',
+                    type: this.$t("documents.options.table.content.number"),
+                    required: false,
+                    default: '1200',
+                    description: this.$t("documents.options.table.content.description.width"),
+                    value: "1200"
+                },
+                {
+                    name: 'height',
+                    type: this.$t("documents.options.table.content.number"),
+                    required: false,
+                    default: '600',
+                    description: this.$t("documents.options.table.content.description.height"),
+                    value: "600"
+                },
+                {
+                    name: 'maxAge',
+                    type: this.$t("documents.options.table.content.number"),
+                    required: false,
+                    default: '86400',
+                    description: this.$t("documents.options.table.content.description.maxAge"),
+                    value: "86400"
+                },
+                {
+                    name: 'format',
+                    type: this.$t("documents.options.table.content.string"),
+                    required: false,
+                    default: "jpeg",
+                    description: this.$t("documents.options.table.content.description.format"),
+                    value: "jpeg"
+                },
+                {
+                    name: 'fullpage',
+                    type: 'true | false',
+                    required: false,
+                    default: 'false',
+                    description: this.$t("documents.options.table.content.description.fullpage"),
+                    value: 'false'
+                },
+                {
+                    name: 'timeout',
+                    type: this.$t("documents.options.table.content.number"),
+                    required: false,
+                    default: '10000',
+                    description: this.$t("documents.options.table.content.description.timeout"),
+                    value: '10000'
+                },
+                {
+                    name: 'viewportWidth',
+                    type: this.$t("documents.options.table.content.number"),
+                    required: false,
+                    default: '1200',
+                    description: this.$t("documents.options.table.content.description.viewportWidth"),
+                    value: '1200'
+                },
+                {
+                    name: 'viewportHeight',
+                    type: this.$t("documents.options.table.content.number"),
+                    required: false,
+                    default: '600',
+                    description: this.$t("documents.options.table.content.description.viewportHeight"),
+                    value: '600'
+                }
+            ]
+        },
+        url(): string {
+            let params = {}
+            if (this.inputData.width != 1200) {
+                params = Object.assign(params, { width: this.inputData.width })
+            }
+            if (this.inputData.height != 600) {
+                params = Object.assign(params, { height: this.inputData.height })
+            }
+            if (this.inputData.maxAge != 86400 && this.inputData.maxAge > 9) {
+                params = Object.assign(params, { maxAge: this.inputData.maxAge })
+            }
+            if (this.inputData.format === "png") {
+                params = Object.assign(params, { format: this.inputData.format })
+            }
+            if (this.inputData.fullpage === true) {
+                params = Object.assign(params, { fullpage: this.inputData.fullpage })
+            }
+            if (this.inputData.timeout != 10000 && 2000 <= this.inputData.timeout && this.inputData.timeout <= 15000) {
+                params = Object.assign(params, { timeout: this.inputData.timeout })
+            }
+            if (this.inputData.viewportWidth != 1200 && 320 <= this.inputData.viewportWidth && this.inputData.viewportWidth <= 4096) {
+                params = Object.assign(params, { viewportWidth: this.inputData.viewportWidth })
+            }
+            if (this.inputData.viewportHeight != 600 && 320 <= this.inputData.viewportHeight && this.inputData.viewportHeight <= 4096) {
+                params = Object.assign(params, { viewportHeight: this.inputData.viewportHeight })
+            }
+            return getCaptureURL(this.inputData.url, params)
+        }
+    }
 })
 </script>
 <style lang="scss">
@@ -110,7 +206,12 @@ export default defineComponent({
     .v-input__control {
         border: 1px solid rgb(var(--v-theme-primary));
         border-radius: 5px;
-        background-color: white;
+
+    }
+    .radiogroup , .checkbox {
+        .v-input__control {
+            border: none;
+        }
     }
 
     .docs-title {
@@ -144,6 +245,10 @@ export default defineComponent({
 
     .v-table .v-table__wrapper>table>tbody>tr:nth-child(2n-1)>td {
         background: #ededed;
+    }
+
+    .v-input__details {
+        display: none;
     }
 }
 </style>
