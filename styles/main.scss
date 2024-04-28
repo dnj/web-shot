@@ -3,6 +3,11 @@
 	$line-height-root: 2,
 );
 
+@font-face {
+	font-family: 'Audiowide';
+	src: url("./../assets/fonts/audiowide/Audiowide-Regular.ttf") format('truetype')
+}
+
 @import "vazirmatn/Vazirmatn-font-face.css";
 
 * {

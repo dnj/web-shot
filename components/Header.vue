@@ -1,12 +1,12 @@
 <template>
-	<v-app-bar :elevation="0" color="white" density="comfortable" class=" px-5">
-		<NuxtLink :to="localePath('/')" class="toolbar-title me-3">
+	<v-app-bar class="app-bar px-5" :elevation="0" color="white" density="comfortable">
+		<NuxtLink :to="localePath('/')" class="toolbar-title me-6">
 			<v-app-bar-title>{{ $t("pages.index") }}</v-app-bar-title>
 		</NuxtLink>
 		<v-toolbar-items class="hidden-sm-and-down">
-			<v-btn :to="localePath('docs')" class="mx-1" color="secondary">{{ $t("pages.docs") }}</v-btn>
-			<v-btn :to="localePath('gallery')" class="mx-1" color="secondary">{{ $t("pages.gallery") }}</v-btn>
-			<v-btn :to="localePath('contact')" class="mx-1" color="secondary">{{ $t("pages.contact") }}</v-btn>
+			<v-btn :to="localePath('docs')" class="mx-3">{{ $t("pages.docs") }}</v-btn>
+			<v-btn :to="localePath('gallery')" class="mx-3">{{ $t("pages.gallery") }}</v-btn>
+			<v-btn :to="localePath('contact')" class="mx-3">{{ $t("pages.contact") }}</v-btn>
 		</v-toolbar-items>
 		<v-spacer />
 		<v-menu>
@@ -17,7 +17,8 @@
 				</v-btn>
 			</template>
 			<v-list :elevation="3">
-				<v-list-item v-for="(language, i) in getOtherLanguages(locale)" :key="i" :value="language.value" :to="switchLocalePath(language.value)">
+				<v-list-item v-for="(language, i) in getOtherLanguages(locale)" :key="i" :value="language.value"
+					:to="switchLocalePath(language.value)">
 					<template v-slot:append>
 						<span class="fi ms-2 rounded" :class="`fi-${language.country}`" />
 					</template>
@@ -31,13 +32,13 @@
 			</template>
 			<v-list>
 				<v-list-item>
-					<v-btn variant="text" :to="localePath('docs')" color="secondary" v-text="$t('pages.docs')" />
+					<v-btn variant="text" :to="localePath('docs')" v-text="$t('pages.docs')" />
 				</v-list-item>
 				<v-list-item>
-					<v-btn variant="text" :to="localePath('gallery')" color="secondary" v-text="$t('pages.gallery')" />
+					<v-btn variant="text" :to="localePath('gallery')" v-text="$t('pages.gallery')" />
 				</v-list-item>
 				<v-list-item>
-					<v-btn variant="text" :to="localePath('contact')" color="secondary" v-text="$t('pages.contact')" />
+					<v-btn variant="text" :to="localePath('contact')" v-text="$t('pages.contact')" />
 				</v-list-item>
 			</v-list>
 		</v-menu>
@@ -71,14 +72,20 @@ export default defineComponent({
 	},
 	computed: {
 		currentLang() {
-			return this.languages.find(({value}) => value === this.locale)!;
+			return this.languages.find(({ value }) => value === this.locale)!;
 		}
 	}
 })
 </script>
 <style>
-.toolbar-title {
-	text-decoration: none;
-	color: black;
+.app-bar {
+	.toolbar-title {
+		text-decoration: none;
+		font-family: Audiowide;
+		color: black;
+	}
+	.v-btn__content {
+		font-size: 11px;
+	}
 }
 </style>
