@@ -1,21 +1,21 @@
 <template>
-	<div class="banner text-center pt-15 pb-5 px-5">
+	<div class="banner text-center py-8 px-5">
 		<h1>{{ $t("index.banner.title") }}</h1>
-		<div class="text-secondary"><strong>{{ $t("index.banner.subtitle") }}</strong></div>
+		<div>{{ $t("index.banner.subtitle") }}</div>
 		<v-row justify="center" class="mt-5">
-			<v-col lg="5" md="8" sm="10" cols="11">
+			<v-col md="8" sm="10" cols="11">
 				<v-text-field variant="outlined" dir="ltr" v-model="inputUrl" class="px-0">
 					<template v-slot:append-inner>
-						<v-btn color="primary" height="100%" elevation="0" class="font-weight-bold" @click="onSubmit">{{$t("index.banner.capture") }}</v-btn>
+						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-5"
+							prepend-icon="mdi-camera" @click="onSubmit">{{ $t("index.banner.capture") }}</v-btn>
 					</template>
 				</v-text-field>
 			</v-col>
 		</v-row>
-
-		<Images :images="images" :error="error" :width="150" :height="75" />
-		<v-btn :to="localePath('docs')" class="mt-5" elevation="0" color="primary">{{ $t("index.banner.start") }}</v-btn>
 	</div>
+
 	<v-container class="mb-15">
+		<Images :images="images" :error="error" :width="150" :height="75" />
 		<div class="home-content text-center">
 			<div class="title-of-content">{{ $t("index.intro.title") }}</div>
 			<div class="content">{{ $t("index.intro.content") }}</div>
@@ -28,7 +28,8 @@
 			</div>
 			<div class="title-of-content">{{ $t("index.options.title") }}</div>
 			<div class="content">{{ $t("index.options.content") }}</div>
-			<div class="code-background" dir="ltr">{{ `<img src="${getCaptureURL(inputUrl, { width: '100', height: '600' })}">` }}
+			<div class="code-background" dir="ltr">{{ `<img
+					src="${getCaptureURL(inputUrl, { width: '100', height: '600' })}">` }}
 			</div>
 			<div class="content">{{ $t("index.options.code-explanation") }}</div>
 			<v-btn variant="text" color="primary" :to="localePath('docs')">{{ $t("index.options.button") }}</v-btn>
@@ -86,7 +87,7 @@ export default defineComponent({
 </script>
 <style lang="scss">
 .banner {
-	background-color: rgb(var(--v-theme-backgroundGray));
+	background-image: linear-gradient(to bottom right, rgb(117, 235, 193,0.2), rgb(121, 224, 231, 0.2) 15%, rgb(46, 97, 227, 0.2) 40%, rgb(172, 116, 228, 0.2) 60%, rgb(251, 158, 20, 0.2) 88%),linear-gradient(to top right, rgb(252, 252, 252, 0.8), rgb(245, 215, 255, 0.8));
 
 	.v-input__control {
 		border: 1px solid rgb(var(--v-theme-primary));
@@ -127,8 +128,8 @@ export default defineComponent({
 }
 
 .v-field__input {
-	--v-field-input-padding-top: 7px;
-	--v-field-input-padding-bottom: 7px;
+	--v-field-input-padding-top: 8px;
+	--v-field-input-padding-bottom: 8px;
 	--v-input-control-height: 0px;
 	--v-field-padding-start: 20px;
 }
