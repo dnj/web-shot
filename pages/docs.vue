@@ -171,32 +171,6 @@ export default defineComponent({
                 viewportWidth: this.inputData.viewportWidth,
                 viewportHeight: this.inputData.viewportHeight
             })
-
-
-            // if (this.inputData.width != 1200) {
-            //     params = Object.assign(params, { width: this.inputData.width })
-            // }
-            // if (this.inputData.height != 600) {
-            //     params = Object.assign(params, { height: this.inputData.height })
-            // }
-            // if (this.inputData.maxAge != 86400 && this.inputData.maxAge > 9) {
-            //     params = Object.assign(params, { maxAge: this.inputData.maxAge })
-            // }
-            // if (this.inputData.format === "png") {
-            //     params = Object.assign(params, { format: this.inputData.format })
-            // }
-            // if (this.inputData.fullpage === true) {
-            //     params = Object.assign(params, { fullpage: this.inputData.fullpage })
-            // }
-            // if (this.inputData.timeout != 10000 && 2000 <= this.inputData.timeout && this.inputData.timeout <= 15000) {
-            //     params = Object.assign(params, { timeout: this.inputData.timeout })
-            // }
-            // if (this.inputData.viewportWidth != 1200 && 320 <= this.inputData.viewportWidth && this.inputData.viewportWidth <= 4096) {
-            //     params = Object.assign(params, { viewportWidth: this.inputData.viewportWidth })
-            // }
-            // if (this.inputData.viewportHeight != 600 && 320 <= this.inputData.viewportHeight && this.inputData.viewportHeight <= 4096) {
-            //     params = Object.assign(params, { viewportHeight: this.inputData.viewportHeight })
-            // }
         }
     }
 })
