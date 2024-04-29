@@ -33,6 +33,6 @@
     "sass-loader": "^14.1.1",
     "unplugin-font-to-buffer": "^0.2.0",
     "vite-plugin-vuetify": "^2.0.3",
-    "vuetify": "^3.5.16"
+    "vuetify": "^3.5.17"
   }
 }
