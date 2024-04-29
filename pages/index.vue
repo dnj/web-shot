@@ -33,7 +33,9 @@
 						<div class="text-center px-5 pb-10">
 							<div class="api-title">{{ $t("index.intro.title") }}</div>
 							<div class="text-contentGray mb-10">{{ $t("index.intro.content") }}</div>
-							<Images :images="images" :error="error" :width="150" :height="75" />
+							<Images :images="images" :error="error" :width="captures.length > 0 ? 600 : 150"
+								:height="captures.length > 0 ? 300 : 75" />
+							<v-btn v-if="captures.length > 0" prepend-icon="mdi-download" color="primary" class="mt-5">{{ $t("index.api-card.download-image.button") }}</v-btn>
 						</div>
 					</div>
 				</div>
@@ -52,7 +54,8 @@
 			</div>
 			<div>{{ $t("index.options.code-explanation") }}</div>
 			<v-btn color="primary" :to="localePath('docs')" height="43px" class="px-10 mt-8"
-				:append-icon="$vuetify.locale.isRtl ? 'mdi-arrow-left'  : 'mdi-arrow-right'">{{ $t("index.options.button") }}</v-btn>
+				:append-icon="$vuetify.locale.isRtl ? 'mdi-arrow-left' : 'mdi-arrow-right'">{{
+				$t("index.options.button") }}</v-btn>
 		</div>
 	</v-container>
 </template>
@@ -116,15 +119,15 @@ export default defineComponent({
 	},
 	methods: {
 		async onSubmit() {
-			this.captures.unshift({
+			this.captures = [{
 				url: this.inputUrl,
 				date: new Date(),
-			});
+			}];
 		},
 	},
 	computed: {
 		images(): IImage[] {
-			return [...this.captures, ...this.gallery].slice(0, IMAGES_COUNT);
+			return this.captures.length > 0 ? this.captures : this.gallery;
 		}
 	}
 })

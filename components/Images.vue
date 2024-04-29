@@ -66,8 +66,7 @@ export default defineComponent({
 </script>
 <style>
 .image-card {
-
     border-radius: 5px;
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
 }
 </style>
