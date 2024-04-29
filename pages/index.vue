@@ -15,7 +15,30 @@
 	</div>
 
 	<v-container class="mb-15">
-		<Images :images="images" :error="error" :width="150" :height="75" />
+		<v-row>
+			<v-col cols="4">
+				<div class="text-secondary ms-5">Browser Options</div>
+				<div class="pa-5 cards">
+					<div>Resolution</div>
+					<v-select :items="resolutionOptios" variant="outlined"></v-select>
+				</div>
+			</v-col>
+			<v-col cols="8">
+				<div class="text-secondary ms-5">Website Screenshot API</div>
+				<div class="pa-5 cards">
+					<div class="api-box pt-3">
+						<div class="api-box-header ">
+							<div v-for="i in 3" class="circle ms-3"></div>
+						</div>
+						<div class="text-center px-5 pb-10">
+							<div class="api-title">{{ $t("index.intro.title") }}</div>
+							<div class="text-contentGray mb-10">{{ $t("index.intro.content") }}</div>
+							<Images :images="images" :error="error" :width="150" :height="75" />
+						</div>
+					</div>
+				</div>
+			</v-col>
+		</v-row>
 		<div class="home-content text-center">
 			<div class="title-of-content">{{ $t("index.intro.title") }}</div>
 			<div class="content">{{ $t("index.intro.content") }}</div>
@@ -42,6 +65,18 @@ import Images, { fetchGallery, type IImage } from '~/components/Images.vue';
 
 const IMAGES_COUNT = 8;
 
+interface IInput {
+	url: string,
+	width: number,
+	height: number,
+	maxAge: number,
+	format: string,
+	fullpage: boolean,
+	timeout: number,
+	viewportWidth: number,
+	viewportHeight: number
+}
+
 export default defineComponent({
 	components: {
 		Images
@@ -67,7 +102,19 @@ export default defineComponent({
 			inputUrl: "https://www.google.com",
 			title: this.$t("pages.index"),
 			error: false,
-			captures: [] as IImage[]
+			captures: [] as IImage[],
+			resolutionOptios: ['1280 X 1280', '600 X 600'],
+			inputData: {
+				url: 'https://www.google.com',
+				width: 1200,
+				height: 600,
+				maxAge: 86400,
+				format: 'jpeg',
+				fullpage: false,
+				timeout: 10000,
+				viewportWidth: 1200,
+				viewportHeight: 600
+			} as IInput
 		};
 	},
 	methods: {
@@ -87,7 +134,7 @@ export default defineComponent({
 </script>
 <style lang="scss">
 .banner {
-	background-image: linear-gradient(to bottom right, rgb(117, 235, 193,0.2), rgb(121, 224, 231, 0.2) 15%, rgb(46, 97, 227, 0.2) 40%, rgb(172, 116, 228, 0.2) 60%, rgb(251, 158, 20, 0.2) 88%),linear-gradient(to top right, rgb(252, 252, 252, 0.8), rgb(245, 215, 255, 0.8));
+	background-image: linear-gradient(to bottom right, rgba(117, 235, 193, 0.2), rgba(121, 224, 231, 0.2) 15%, rgba(46, 97, 227, 0.2) 40%, rgba(172, 116, 228, 0.2) 60%, rgba(251, 158, 20, 0.2) 88%), linear-gradient(to top right, rgb(252, 252, 252, 0.8), rgb(245, 215, 255, 0.8));
 
 	.v-input__control {
 		border: 1px solid rgb(var(--v-theme-primary));
@@ -100,19 +147,51 @@ export default defineComponent({
 	}
 }
 
+.cards {
+	border: 3px solid rgb(var(--v-theme-borderGray));
+	border-radius: 20px;
+	background-color: white;
+}
+
+.api-box {
+	border: 3px solid rgb(var(--v-theme-borderGray));
+	border-radius: 15px;
+
+	.api-box-header {
+		border-bottom: 3px solid rgb(var(--v-theme-borderGray));
+
+		.circle {
+			border-radius: 50%;
+			border: 3.5px solid rgb(var(--v-theme-borderGray));
+			width: 22px;
+			height: 22px;
+			display: inline-block;
+		}
+	}
+
+	.api-title {
+		margin-top: 20px;
+		margin-bottom: 10px;
+		color: rgb(var(--v-theme-titleGray));
+		font-size: 18px;
+		font-weight: 800;
+	}
+}
+
 .home-content {
 
 	.title-of-content {
 		margin-top: 60px;
 		margin-bottom: 10px;
 		color: rgb(var(--v-theme-titleGray));
-		font-size: 22px;
+		font-size: 16px;
 		font-weight: 800;
 	}
 
 	.content {
 		color: rgb(var(--v-theme-contentGray));
 		margin-bottom: 25px;
+
 	}
 
 	.code-background {
