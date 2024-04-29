@@ -11,12 +11,13 @@ export default defineNuxtPlugin((app) => {
 				light: {
 					colors: {
 						primary: "#000000",
-						secondary: "#959595",
+						secondary: "#ffffff",
+						textGray: "#555555",
 						borderGray: "#F2F2F2",
 						titleGray: "#6c757d",
+						cardTitleGray: "#959595",
 						subtitleGray: "#6e7880",
 						contentGray: "#7c848b",
-						backgroundGray: "#ecf0f1",
 						codeText: "7b8a8b",
 						background:"#fafafa"
 					},

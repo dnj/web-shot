@@ -6,7 +6,7 @@
 			<v-col md="8" sm="10" cols="11">
 				<v-text-field variant="outlined" dir="ltr" v-model="inputUrl" class="px-0">
 					<template v-slot:append-inner>
-						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-5"
+						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-5 text-secondary"
 							prepend-icon="mdi-camera" @click="onSubmit">{{ $t("index.banner.capture") }}</v-btn>
 					</template>
 				</v-text-field>
@@ -17,14 +17,14 @@
 	<v-container class="mb-15">
 		<v-row>
 			<v-col cols="4">
-				<div class="text-secondary ms-5">Browser Options</div>
+				<div class="text-cardTitleGray ms-5">Browser Options</div>
 				<div class="pa-5 cards">
 					<div>Resolution</div>
 					<v-select :items="resolutionOptios" variant="outlined"></v-select>
 				</div>
 			</v-col>
 			<v-col cols="8">
-				<div class="text-secondary ms-5">Website Screenshot API</div>
+				<div class="text-cardTitleGray ms-5">Website Screenshot API</div>
 				<div class="pa-5 cards">
 					<div class="api-box pt-3">
 						<div class="api-box-header ">
@@ -39,23 +39,20 @@
 				</div>
 			</v-col>
 		</v-row>
-		<div class="home-content text-center">
-			<div class="title-of-content">{{ $t("index.intro.title") }}</div>
-			<div class="content">{{ $t("index.intro.content") }}</div>
-		</div>
-		<div class="home-content text-center">
-			<div class="title-of-content">{{ $t("index.how-to-use.title") }}</div>
-			<div class="content">{{ $t("index.how-to-use.content") }}</div>
-			<div class="code-background" dir="ltr">
+		<div class="home-content text-center text-textGray">
+			<div class="title-of-content mt-15">{{ $t("index.how-to-use.title") }}</div>
+			<div>{{ $t("index.how-to-use.content") }}</div>
+			<div class="code-background pa-2 my-5" dir="ltr">
 				&lt;img src="{{ getCaptureURL(inputUrl) }}"&gt;
 			</div>
-			<div class="title-of-content">{{ $t("index.options.title") }}</div>
-			<div class="content">{{ $t("index.options.content") }}</div>
-			<div class="code-background" dir="ltr">{{ `<img
+			<div class="title-of-content mt-15">{{ $t("index.options.title") }}</div>
+			<div>{{ $t("index.options.content") }}</div>
+			<div class="code-background pa-2 my-5" dir="ltr">{{ `<img
 					src="${getCaptureURL(inputUrl, { width: '100', height: '600' })}">` }}
 			</div>
-			<div class="content">{{ $t("index.options.code-explanation") }}</div>
-			<v-btn variant="text" color="primary" :to="localePath('docs')">{{ $t("index.options.button") }}</v-btn>
+			<div>{{ $t("index.options.code-explanation") }}</div>
+			<v-btn color="primary" :to="localePath('docs')" height="43px" class="px-10 mt-8"
+				:append-icon="$vuetify.locale.isRtl ? 'mdi-arrow-left'  : 'mdi-arrow-right'">{{ $t("index.options.button") }}</v-btn>
 		</div>
 	</v-container>
 </template>
@@ -181,25 +178,14 @@ export default defineComponent({
 .home-content {
 
 	.title-of-content {
-		margin-top: 60px;
-		margin-bottom: 10px;
-		color: rgb(var(--v-theme-titleGray));
 		font-size: 16px;
 		font-weight: 800;
 	}
 
-	.content {
-		color: rgb(var(--v-theme-contentGray));
-		margin-bottom: 25px;
-
-	}
-
 	.code-background {
-		background-color: rgb(var(--v-theme-backgroundGray));
-		border: 1px solid #dad9d9;
-		margin-top: 20px;
-		margin-bottom: 20px;
-		padding: 10px;
+		background-color: rgb(var(--v-theme-secondary));
+		border: 3px solid rgb(var(--v-theme-borderGray));
+		border-radius: 15px;
 		color: rgb(var(--v-theme-codeText));
 		font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 		font-size: 14px;
