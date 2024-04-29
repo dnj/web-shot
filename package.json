@@ -28,7 +28,7 @@
   "devDependencies": {
     "@nuxtjs/i18n": "npm:@nuxtjs/i18n-edge",
     "@rollup/plugin-image": "^3.0.3",
-    "prisma": "^5.12.1",
+    "prisma": "^5.13.0",
     "sass": "^1.75.0",
     "sass-loader": "^14.1.1",
     "unplugin-font-to-buffer": "^0.2.0",
