@@ -84,8 +84,5 @@ export default defineComponent({
 		font-family: Audiowide;
 		color: black;
 	}
-	.v-btn__content {
-		font-size: 11px;
-	}
 }
 </style>

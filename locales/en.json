@@ -5,6 +5,8 @@
     "index.banner.start": "Get Started",
     "index.intro.title": "Screenshot capturing is instant",
     "index.intro.content": "We are the only website that capture instant screenshots that provides you with images as soon as you request them. Try it out using our free API.",
+    "index.api-card.browser-options.title": "Browser Options",
+    "index.api-card.screenshot-api.title": "Website Screenshot API",
     "index.api-card.download-image.button": "download",
     "index.how-to-use.title": "Try it now!",
     "index.how-to-use.content": "Simply use the code below on your website:",
