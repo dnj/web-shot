@@ -4,7 +4,7 @@
 		<div>{{ $t("index.banner.subtitle") }}</div>
 		<v-row justify="center" class="mt-5">
 			<v-col md="8" sm="10" cols="11">
-				<v-text-field variant="outlined" dir="ltr" v-model="inputUrl" class="px-0">
+				<v-text-field variant="outlined" dir="ltr" v-model="inputData.url" class="px-0">
 					<template v-slot:append-inner>
 						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-5 text-secondary"
 							prepend-icon="mdi-camera" @click="onSubmit">{{ $t("index.banner.capture") }}</v-btn>
@@ -13,7 +13,6 @@
 			</v-col>
 		</v-row>
 	</div>
-
 	<v-container class="mb-15 mt-5">
 		<v-row>
 			<v-col cols="4">
@@ -108,14 +107,22 @@
 				<div class="px-5 py-7 cards">
 					<div class="api-box pt-3">
 						<div class="api-box-header ">
-							<div v-for="i in 3" class="circle ms-3"></div>
+							<v-row>
+								<v-col cols="2" class="pe-0 py-2">
+									<div v-for="i in 3" class="circle ms-3"></div>
+								</v-col>
+								<v-col cols="10" class="py-2">
+									<a v-if="captures.length > 0" class="text-decoration-none" href="url">{{ url }}</a>
+								</v-col>
+							</v-row>
 						</div>
+
 						<div class="text-center px-5 pb-10">
 							<div class="api-title">{{ $t("index.intro.title") }}</div>
 							<div class="text-contentGray mb-10">{{ $t("index.intro.content") }}</div>
 							<Images :images="images" :error="error" :width="captures.length > 0 ? 600 : 150"
 								:height="captures.length > 0 ? 300 : 75" />
-							<v-btn v-if="captures.length > 0" prepend-icon="mdi-download" color="primary"
+							<v-btn v-if="captures.length > 0" prepend-icon="mdi-download" :to="url" color="primary"
 								class="mt-5">{{
 								$t("index.api-card.download-image.button") }}</v-btn>
 						</div>
@@ -127,12 +134,12 @@
 			<div class="title-of-content mt-15">{{ $t("index.how-to-use.title") }}</div>
 			<div>{{ $t("index.how-to-use.content") }}</div>
 			<div class="code-background pa-2 my-5" dir="ltr">
-				&lt;img src="{{ getCaptureURL(inputUrl) }}"&gt;
+				&lt;img src="{{ getCaptureURL(inputData.url) }}"&gt;
 			</div>
 			<div class="title-of-content mt-15">{{ $t("index.options.title") }}</div>
 			<div>{{ $t("index.options.content") }}</div>
 			<div class="code-background pa-2 my-5" dir="ltr">{{ `<img
-					src="${getCaptureURL(inputUrl, { width: '100', height: '600' })}">` }}
+					src="${getCaptureURL(inputData.url, { width: '100', height: '600' })}">` }}
 			</div>
 			<div>{{ $t("index.options.code-explanation") }}</div>
 			<v-btn color="primary" :to="localePath('docs')" height="43px" class="px-10 mt-8"
@@ -144,19 +151,20 @@
 <script lang="ts">
 import { useI18n } from '#imports'
 import Images, { fetchGallery, type IImage } from '~/components/Images.vue';
+import { getCaptureURL } from '~/utils/index';
 
 const IMAGES_COUNT = 8;
 
 interface IInput {
 	url: string,
-	width: number,
-	height: number,
-	maxAge: number,
+	width: string,
+	height: string,
+	maxAge: string,
 	format: string,
-	fullpage: boolean,
-	timeout: number,
-	viewportWidth: number,
-	viewportHeight: number
+	fullpage: string,
+	timeout: string,
+	viewportWidth: string,
+	viewportHeight: string
 }
 
 export default defineComponent({
@@ -177,36 +185,35 @@ export default defineComponent({
 			error = true;
 		}
 
-		return { gallery, error, localePath: useLocalePath() };
+		return { gallery, getCaptureURL, error, localePath: useLocalePath() };
 	},
 	data() {
 		return {
-			inputUrl: "https://www.google.com",
 			title: this.$t("pages.index"),
 			error: false,
 			captures: [] as IImage[],
 			resolutionOptios: [
-				{ title: '1024 X 768', value: { viewportWidth: 1024, viewportHeight: 768 } },
-				{ title: '1280 X 800', value: { viewportWidth: 1280, viewportHeight: 800 } },
-				{ title: '1680 X 1050', value: { viewportWidth: 1680, viewportHeight: 1050 } },
-				{ title: '1600 X 900', value: { viewportWidth: 1600, viewportHeight: 900 } },
-				{ title: '1440 X 900', value: { viewportWidth: 1440, viewportHeight: 900 } },
-				{ title: '1280 X 1024', value: { viewportWidth: 1280, viewportHeight: 1024 } },
-				{ title: '1366 X 768', value: { viewportWidth: 1366, viewportHeight: 768 } },
-				{ title: '1200 X 600', value: { viewportWidth: 1200, viewportHeight: 600 } }
+				{ title: '1024 X 768', value: { viewportWidth: '1024', viewportHeight: '768' } },
+				{ title: '1280 X 800', value: { viewportWidth: '1280', viewportHeight: '800' } },
+				{ title: '1680 X 1050', value: { viewportWidth: '1680', viewportHeight: '1050' } },
+				{ title: '1600 X 900', value: { viewportWidth: '1600', viewportHeight: '900' } },
+				{ title: '1440 X 900', value: { viewportWidth: '1440', viewportHeight: '900' } },
+				{ title: '1280 X 1024', value: { viewportWidth: '1280', viewportHeight: '1024' } },
+				{ title: '1366 X 768', value: { viewportWidth: '1366', viewportHeight: '768' } },
+				{ title: '1200 X 600', value: { viewportWidth: '1200', viewportHeight: '600' } }
 			],
-			selectedResolution: { viewportWidth: 1200, viewportHeight: 600 } ,
+			selectedResolution: { viewportWidth: '1200', viewportHeight: '600' },
 			formatOptios: ["jpeg", "png"],
 			inputData: {
-				url: 'https://www.google.com',
-				width: 1200,
-				height: 600,
-				maxAge: 86400,
-				format: 'jpeg',
-				fullpage: false,
-				timeout: 10000,
-				viewportWidth: 1200,
-				viewportHeight: 600
+				url: "https://www.google.com",
+				width: "1200",
+				height: "600",
+				maxAge: "86400",
+				format: "jpeg",
+				fullpage: "false",
+				timeout: "10000",
+				viewportWidth: "1200",
+				viewportHeight: "600"
 			} as IInput,
 			slidersRange: {
 				width: { min: 0, max: 5000 },
@@ -219,19 +226,30 @@ export default defineComponent({
 	methods: {
 		async onSubmit() {
 			this.captures = [{
-				url: this.inputUrl,
+				url: this.url,
 				date: new Date(),
 			}];
 		},
 		setResolution() {
 			this.inputData.viewportWidth = this.selectedResolution.viewportWidth;
 			this.inputData.viewportHeight = this.selectedResolution.viewportHeight;
-			console.log("fffgg")
 		}
 	},
 	computed: {
 		images(): IImage[] {
 			return this.captures.length > 0 ? this.captures : this.gallery;
+		},
+		url(): string {
+			return getCaptureURL(this.inputData.url, {
+				width: this.inputData.width,
+				height: this.inputData.height,
+				maxAge: this.inputData.maxAge,
+				format: this.inputData.format,
+				fullpage: this.inputData.fullpage,
+				timeout: this.inputData.timeout,
+				viewportWidth: this.inputData.viewportWidth,
+				viewportHeight: this.inputData.viewportHeight
+			})
 		}
 	}
 })
