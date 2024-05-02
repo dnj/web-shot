@@ -1,6 +1,7 @@
 <template>
 	<v-app-bar class="app-bar px-5" :elevation="0" color="white" density="comfortable">
-		<NuxtLink :to="localePath('/')" class="toolbar-title me-6">
+		<NuxtLink :to="localePath('/')" class="toolbar-title me-sm-6 ms-1"
+			:class="$vuetify.locale.isRtl ? '' : 'english-font'">
 			<v-app-bar-title>{{ $t("pages.index") }}</v-app-bar-title>
 		</NuxtLink>
 		<v-toolbar-items class="hidden-sm-and-down">
@@ -13,7 +14,7 @@
 			<template v-slot:activator="{ props }">
 				<v-btn variant="text" color="light" height="80%" v-bind="props">
 					<span class="fi flag mx-1 rounded" :class="`fi-` + currentLang.country" />
-					{{ currentLang.title }}
+					{{ $vuetify.display.smAndUp ? currentLang.title : currentLang.title.slice(0, 2) }}
 				</v-btn>
 			</template>
 			<v-list :elevation="3">
@@ -81,8 +82,11 @@ export default defineComponent({
 .app-bar {
 	.toolbar-title {
 		text-decoration: none;
-		font-family: Audiowide;
 		color: black;
+	}
+
+	.english-font {
+		font-family: Audiowide;
 	}
 }
 </style>

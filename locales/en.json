@@ -48,5 +48,16 @@
     "contact.subtitle": "Ways of communication",
     "contact.ways.email": "Email:",
     "contact.ways.phone": "Phone:",
-    "fetch-data.error.server": "Server error"
+    "fetch-data.error.server": "Server error",
+    "api.options.resolution": "Resolution:",
+    "api.options.resolution.custom-btn": "custom",
+    "api.options.width":"Width:",
+    "api.options.height":"Height:",
+    "api.options.timeout":"Timeout:",
+    "api.options.max-age":"Max age:",
+    "api.options.full-page":"Full page:",
+    "api.options.format":"Format:",
+    "api.options.units.px":"px",
+    "api.options.units.second": "s",
+    "api.options.units.ms": "ms"
 }

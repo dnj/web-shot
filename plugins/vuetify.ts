@@ -19,7 +19,8 @@ export default defineNuxtPlugin((app) => {
 						subtitleGray: "#6e7880",
 						contentGray: "#7c848b",
 						codeText: "7b8a8b",
-						background:"#fafafa"
+						background:"#fafafa",
+						blueText: "#0277BD"
 					},
 				},
 			},

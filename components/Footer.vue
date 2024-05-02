@@ -2,14 +2,15 @@
     <div class="footer-top text-center">
         <div class="footer-line">
             <NuxtLink :to="localePath('/')" class="footer-title">
-                <div>{{ $t("pages.index") }}</div>
+                <div>Web Shot</div>
             </NuxtLink>
             <div class="text-secondary">{{ $t("index.banner.title") }}</div>
         </div>
     </div>
     <v-container class="footer">
         <v-row>
-            <v-col sm="6" cols="12" class="py-2">
+            <v-col md="6" cols="12" class="py-2"
+                :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'right' : 'left'">
                 <v-btn class="mx-1" :to="localePath('docs')" variant="text" prepend-icon="mdi-circle-medium">{{
                     $t("pages.docs") }}</v-btn>
                 <v-btn class="mx-1" :to="localePath('gallery')" variant="text" prepend-icon="mdi-circle-medium">{{
@@ -17,7 +18,7 @@
                 <v-btn class="mx-1" :to="localePath('contact')" variant="text" prepend-icon="mdi-circle-medium">{{
                     $t("pages.contact") }}</v-btn>
             </v-col>
-            <v-col sm="6" cols="12" class="py-2"
+            <v-col md="6" cols="12" class="py-2"
                 :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'left' : 'right'">
                 <div class="footer-sen">&copy; {{ $t("copy-right") }}</div>
             </v-col>
@@ -38,6 +39,15 @@ export default defineComponent({
     .v-btn__prepend {
         margin: 0px;
     }
+
+    @media(max-width: 750px) {
+
+        .v-btn {
+            width: 88px;
+            font-size: 13px;
+        }
+    }
+
 }
 
 .footer-top {

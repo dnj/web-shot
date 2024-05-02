@@ -48,5 +48,16 @@
     "contact.subtitle": "راه های ارتباطی",
     "contact.ways.email": "ایمیل:",
     "contact.ways.phone": "تلفن:",
-    "fetch-data.error.server": "خطای سرور"
+    "fetch-data.error.server": "خطای سرور",
+    "api.options.resolution": "رزولوشن:",
+    "api.options.resolution.custom-btn": "دلخواه",
+    "api.options.width": "عرض:",
+    "api.options.height": "ارتفاع:",
+    "api.options.timeout": "حداکثر زمان بارگذاری صفحه:",
+    "api.options.max-age": "حداکثر زمان کش تصویر:",
+    "api.options.full-page": "تمام صفحه:",
+    "api.options.format": "فرمت:",
+    "api.options.units.px": "پیکسل",
+    "api.options.units.second": "ثانیه",
+    "api.options.units.ms": "میلی ثانیه"
 }

@@ -3,11 +3,13 @@
 		<h1>{{ $t("index.banner.title") }}</h1>
 		<div>{{ $t("index.banner.subtitle") }}</div>
 		<v-row justify="center" class="mt-5">
-			<v-col md="8" sm="10" cols="11">
+			<v-col md="8" sm="10" cols="12">
 				<v-text-field variant="outlined" dir="ltr" v-model="inputData.url" class="px-0">
 					<template v-slot:append-inner>
-						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-5 text-secondary"
-							prepend-icon="mdi-camera" @click="onSubmit">{{ $t("index.banner.capture") }}</v-btn>
+						<v-btn color="primary" height="100%" elevation="0"
+							class="rounded-sm px-sm-5 px-2 text-secondary" @click="onSubmit"><v-icon class="me-2"
+								icon="mdi-camera"></v-icon>{{
+							$t("index.banner.capture") }}</v-btn>
 					</template>
 				</v-text-field>
 			</v-col>
@@ -15,116 +17,111 @@
 	</div>
 	<v-container class="mb-15 mt-5">
 		<v-row>
-			<v-col cols="4">
+			<v-col md="4" cols="12">
 				<div class="text-cardTitleGray mb-1">{{ $t("index.api-card.browser-options.title") }}</div>
-				<div class="pa-5 cards">
-					<div>Resolution</div>
-					<v-select :items="resolutionOptios" variant="outlined" v-model="selectedResolution"
-						@update:modelValue="setResolution"></v-select>
-					<div class="mb-2">width:</div>
+				<div class="py-5 px-3 cards">
+					<div>{{ $t("api.options.resolution") }}</div>
 					<v-row>
-						<v-col cols="11" class="pa-0">
-							<v-slider :max="slidersRange.width.max" :min="slidersRange.height.min" :step="1"
-								class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
-								thumb-color="secondary" v-model="inputData.width">
-								<template v-slot:append>
-									<v-text-field v-model="inputData.width" class="options-input px-0"
-										variant="outlined"></v-text-field>
-								</template>
-							</v-slider>
+						<v-col cols="8" class="pe-0">
+							<v-locale-provider :rtl="false">
+								<v-select v-if="!customResolutionStatus" :items="resolutionOptios" variant="outlined"
+									v-model="selectedResolution" @update:modelValue="setResolution"></v-select>
+								<v-text-field variant="outlined" v-if="customResolutionStatus" :rules="[resolutionRule]"
+									placeholder="width-height:1200-600" v-model="customResolution"
+									@update:modelValue="setCustomResolution"></v-text-field>
+							</v-locale-provider>
 						</v-col>
-						<v-col cols="1" class="pa-0">
-							<span class="text-textGray">px</span>
+						<v-col cols="4">
+							<v-btn height="38px" color="primary" @click="toggleCustomResolution">{{
+								$t("api.options.resolution.custom-btn") }}</v-btn>
 						</v-col>
 					</v-row>
-
-					<div class="mb-2 mt-6">height:</div>
-					<v-row>
-						<v-col cols="11" class="pa-0">
-							<v-slider :max="slidersRange.height.max" :min="slidersRange.height.min" :step="1"
-								class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
-								thumb-color="secondary" v-model="inputData.height">
-								<template v-slot:append>
-									<v-text-field v-model="inputData.height" class="options-input px-0"
-										variant="outlined"></v-text-field>
-								</template>
-							</v-slider>
-						</v-col>
-						<v-col cols="1" class="pa-0">
-							<span class="text-textGray">px</span>
-						</v-col>
-					</v-row>
-
-
-					<div class="mb-2 mt-6">timeout:</div>
-					<v-row>
-						<v-col cols="11" class="pa-0">
-							<v-slider :max="slidersRange.timeout.max" :min="slidersRange.timeout.min" :step="1"
-								class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
-								thumb-color="secondary" v-model="inputData.timeout">
-								<template v-slot:append>
-									<v-text-field v-model="inputData.timeout" class="options-input px-0"
-										variant="outlined"></v-text-field>
-								</template>
-							</v-slider>
-						</v-col>
-						<v-col cols="1" class="pa-0">
-							<span class="text-textGray">ms</span>
-						</v-col>
-					</v-row>
-
-					<div class="mb-2 mt-6">max age:</div>
-					<v-row>
-						<v-col cols="11" class="pa-0">
-							<v-slider :max="slidersRange.maxAge.max" :min="slidersRange.maxAge.min" :step="1"
-								class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
-								thumb-color="secondary" v-model="inputData.maxAge">
-								<template v-slot:append>
-									<v-text-field v-model="inputData.maxAge" class="options-input px-0"
-										variant="outlined"></v-text-field>
-								</template>
-							</v-slider>
-						</v-col>
-						<v-col cols="1" class="pa-0">
-							<span class="text-textGray">s</span>
-						</v-col>
-					</v-row>
+					<div class="mb-2">{{ $t("api.options.width") }}</div>
+					<v-slider :max="slidersRange.width.max" :min="slidersRange.height.min" :step="1"
+						class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
+						thumb-color="secondary" v-model="inputData.width">
+						<template v-slot:append>
+							<v-text-field v-model="inputData.width" class="options-input px-0"
+								variant="outlined"></v-text-field>
+							<span class="text-textGray units ms-2">{{ $t("api.options.units.px") }}</span>
+						</template>
+					</v-slider>
+					<div class="mb-2 mt-6">{{ $t("api.options.height") }}</div>
+					<v-slider :max="slidersRange.height.max" :min="slidersRange.height.min" :step="1"
+						class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
+						thumb-color="secondary" v-model="inputData.height">
+						<template v-slot:append>
+							<v-text-field v-model="inputData.height" class="options-input px-0"
+								variant="outlined"></v-text-field>
+							<span class="text-textGray units ms-2">{{ $t("api.options.units.px") }}</span>
+						</template>
+					</v-slider>
+					<div class="mb-2 mt-6">{{ $t("api.options.timeout") }}</div>
+					<v-slider :max="slidersRange.timeout.max" :min="slidersRange.timeout.min" :step="1"
+						class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
+						thumb-color="secondary" v-model="inputData.timeout">
+						<template v-slot:append>
+							<v-text-field v-model="inputData.timeout" class="options-input px-0"
+								variant="outlined"></v-text-field>
+							<span class="text-textGray units ms-2">{{ $t("api.options.units.ms") }}</span>
+						</template>
+					</v-slider>
+					<div class="mb-2 mt-6">{{ $t("api.options.max-age") }}</div>
+					<v-slider :max="slidersRange.maxAge.max" :min="slidersRange.maxAge.min" :step="1"
+						class="align-center" elevation="5" color="primary" hide-details :thumb-size="18"
+						thumb-color="secondary" v-model="inputData.maxAge">
+						<template v-slot:append>
+							<v-text-field v-model="inputData.maxAge" class="options-input px-0"
+								variant="outlined"></v-text-field>
+							<span class="text-textGray units ms-2">{{ $t("api.options.units.second") }}</span>
+						</template>
+					</v-slider>
 					<v-row class="switch-btn">
-						<v-col cols="3" class="pe-0">
-							<div>full page:</div>
+						<v-col md="4" sm="2" cols="4" class="pe-0 fullPage-title">
+							<div>{{ $t("api.options.full-page") }}</div>
 						</v-col>
-						<v-col cols="9" class="ps-0"><v-switch color="primary"
+						<v-col md="8" sm="10" cols="8" class="ps-0"><v-switch color="primary"
 								v-model="inputData.fullpage"></v-switch></v-col>
 					</v-row>
-
-					<div class="mb-2 mt-4">format:</div>
+					<div class="mb-2 mt-4">{{ $t("api.options.format") }}</div>
 					<v-select :items="formatOptios" variant="outlined" v-model="inputData.format"></v-select>
-
 				</div>
 			</v-col>
-			<v-col cols="8">
+			<v-col md="8" cols="12">
 				<div class="text-cardTitleGray mb-1">{{ $t("index.api-card.screenshot-api.title") }}</div>
-				<div class="px-5 py-7 cards">
+				<div class="px-3 px-sm-5 py-3 py-sm-7 cards">
 					<div class="api-box pt-3">
 						<div class="api-box-header ">
-							<v-row>
-								<v-col cols="2" class="pe-0 py-2">
+							<v-row dir="ltr">
+								<v-col lg="2" sm="3" cols="5" class="pe-0 py-3">
 									<div v-for="i in 3" class="circle ms-3"></div>
 								</v-col>
-								<v-col cols="10" class="py-2">
-									<a v-if="captures.length > 0" class="text-decoration-none" href="url">{{ url }}</a>
+								<v-col v-if="captures.length > 0 && error === false && $vuetify.display.smAndUp" lg="10"
+									sm="9" cols="7" class="py-3 pe-8">
+									<div class="url">
+										<a :href="url">{{ url }}</a>
+									</div>
 								</v-col>
 							</v-row>
 						</div>
 
-						<div class="text-center px-5 pb-10">
+						<div class="text-center px-3 px-sm-5 pb-10">
 							<div class="api-title">{{ $t("index.intro.title") }}</div>
 							<div class="text-contentGray mb-10">{{ $t("index.intro.content") }}</div>
-							<Images :images="images" :error="error" :width="captures.length > 0 ? 600 : 150"
-								:height="captures.length > 0 ? 300 : 75" />
-							<v-btn v-if="captures.length > 0" prepend-icon="mdi-download" :to="url" color="primary"
-								class="mt-5">{{
-								$t("index.api-card.download-image.button") }}</v-btn>
+							<Images :images="images" :error="error"
+								:width="captures.length > 0 ? $vuetify.display.smAndUp ? 470 : 200 : 150"
+								:height="captures.length > 0 ? $vuetify.display.smAndUp ? 235 : 100 : 75" />
+							<div v-if="captures.length > 0 && error === false" class="mt-5">
+								<v-tooltip :text="url" location="top">
+									<template v-slot:activator="{ props }">
+										<v-btn v-bind="props" width="10px" color="blueText" class="me-1"><v-icon
+												icon="mdi-link-variant"></v-icon></v-btn>
+									</template>
+								</v-tooltip>
+								<v-btn prepend-icon="mdi-download" :href="url" color="primary" width="140px">{{
+									$t("index.api-card.download-image.button") }}</v-btn>
+							</div>
+
 						</div>
 					</div>
 				</div>
@@ -133,12 +130,12 @@
 		<div class="home-content text-center text-textGray">
 			<div class="title-of-content mt-15">{{ $t("index.how-to-use.title") }}</div>
 			<div>{{ $t("index.how-to-use.content") }}</div>
-			<div class="code-background pa-2 my-5" dir="ltr">
+			<div class="code-background px-4 py-2 my-5" dir="ltr">
 				&lt;img src="{{ getCaptureURL(inputData.url) }}"&gt;
 			</div>
 			<div class="title-of-content mt-15">{{ $t("index.options.title") }}</div>
 			<div>{{ $t("index.options.content") }}</div>
-			<div class="code-background pa-2 my-5" dir="ltr">{{ `<img
+			<div class="code-background px-4 py-2 my-5" dir="ltr">{{ `<img
 					src="${getCaptureURL(inputData.url, { width: '100', height: '600' })}">` }}
 			</div>
 			<div>{{ $t("index.options.code-explanation") }}</div>
@@ -192,15 +189,17 @@ export default defineComponent({
 			title: this.$t("pages.index"),
 			error: false,
 			captures: [] as IImage[],
+			customResolutionStatus: false,
+			customResolution: '',
 			resolutionOptios: [
-				{ title: '1024 X 768', value: { viewportWidth: '1024', viewportHeight: '768' } },
-				{ title: '1280 X 800', value: { viewportWidth: '1280', viewportHeight: '800' } },
-				{ title: '1680 X 1050', value: { viewportWidth: '1680', viewportHeight: '1050' } },
-				{ title: '1600 X 900', value: { viewportWidth: '1600', viewportHeight: '900' } },
-				{ title: '1440 X 900', value: { viewportWidth: '1440', viewportHeight: '900' } },
-				{ title: '1280 X 1024', value: { viewportWidth: '1280', viewportHeight: '1024' } },
-				{ title: '1366 X 768', value: { viewportWidth: '1366', viewportHeight: '768' } },
-				{ title: '1200 X 600', value: { viewportWidth: '1200', viewportHeight: '600' } }
+				{ title: '1024 × 768', value: { viewportWidth: '1024', viewportHeight: '768' } },
+				{ title: '1280 × 800', value: { viewportWidth: '1280', viewportHeight: '800' } },
+				{ title: '1680 × 1050', value: { viewportWidth: '1680', viewportHeight: '1050' } },
+				{ title: '1600 × 900', value: { viewportWidth: '1600', viewportHeight: '900' } },
+				{ title: '1440 × 900', value: { viewportWidth: '1440', viewportHeight: '900' } },
+				{ title: '1280 × 1024', value: { viewportWidth: '1280', viewportHeight: '1024' } },
+				{ title: '1366 × 768', value: { viewportWidth: '1366', viewportHeight: '768' } },
+				{ title: '1200 × 600', value: { viewportWidth: '1200', viewportHeight: '600' } }
 			],
 			selectedResolution: { viewportWidth: '1200', viewportHeight: '600' },
 			formatOptios: ["jpeg", "png"],
@@ -233,6 +232,27 @@ export default defineComponent({
 		setResolution() {
 			this.inputData.viewportWidth = this.selectedResolution.viewportWidth;
 			this.inputData.viewportHeight = this.selectedResolution.viewportHeight;
+		},
+		toggleCustomResolution() {
+			this.customResolutionStatus = !this.customResolutionStatus;
+			this.inputData.viewportWidth = "1200";
+			this.inputData.viewportHeight = "600";
+			this.selectedResolution = { viewportWidth: '1200', viewportHeight: '600' };
+			this.customResolution = '';
+
+		},
+		resolutionRule(value: string): string | boolean {
+			if (!value) {
+				return "required";
+			}
+			if (!/^\d+\-\d+$/.test(value)) {
+				return "invalid";
+			}
+			return true;
+		},
+		setCustomResolution(){
+			this.inputData.viewportWidth = this.customResolution.substring(0,this.customResolution.indexOf("-"));
+			this.inputData.viewportHeight = this.customResolution.substring(this.customResolution.indexOf("-")+1,this.customResolution.length);
 		}
 	},
 	computed: {
@@ -292,6 +312,17 @@ export default defineComponent({
 		}
 	}
 
+	.url {
+		a {
+			text-decoration: none;
+			color: rgb(var(--v-theme-blueText))
+		}
+
+		white-space: nowrap;
+		overflow-x: auto;
+		text-overflow: ellipsis;
+	}
+
 	.api-title {
 		margin-top: 20px;
 		margin-bottom: 10px;
@@ -299,10 +330,13 @@ export default defineComponent({
 		font-size: 18px;
 		font-weight: 800;
 	}
+
+	.v-btn--size-default {
+		min-width: 20px;
+	}
 }
 
 .home-content {
-
 	.title-of-content {
 		font-size: 16px;
 		font-weight: 800;
@@ -315,6 +349,9 @@ export default defineComponent({
 		color: rgb(var(--v-theme-codeText));
 		font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 		font-size: 14px;
+		white-space: nowrap;
+		overflow-x: auto;
+		text-overflow: ellipsis;
 	}
 }
 
@@ -348,8 +385,12 @@ export default defineComponent({
 	}
 }
 
+.units {
+	font-size: 11px;
+}
+
 .switch-btn {
-	.v-col {
+	.fullPage-title {
 		align-content: center;
 	}
 
