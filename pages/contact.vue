@@ -1,5 +1,5 @@
 <template>
-    <div class="contact-header py-6">
+    <div class="pages-header py-6">
         <v-container>
             <h1>{{ $t("contact.title") }}</h1>
         </v-container>
@@ -90,7 +90,7 @@ export default defineComponent({
 })
 </script>
 <style lang="scss">
-.contact-header {
+.pages-header {
     background-color: rgb(var(--v-theme-secondary));
     border-top: 1px solid rgba(var(--v-theme-shadowGray), 0.09);
     box-shadow: 0px 0px 8px 0px rgba(var(--v-theme-shadowGray), 0.08);

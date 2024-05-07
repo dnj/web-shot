@@ -4,7 +4,7 @@
 			:class="$vuetify.locale.isRtl ? '' : 'english-font'">
 			<v-app-bar-title>{{ $t("pages.index") }}</v-app-bar-title>
 		</NuxtLink>
-		<v-toolbar-items class="hidden-sm-and-down">
+		<v-toolbar-items class="hidden-sm-and-down toolbar-items">
 			<v-btn :to="localePath('docs')" class="mx-3">{{ $t("pages.docs") }}</v-btn>
 			<v-btn :to="localePath('gallery')" class="mx-3">{{ $t("pages.gallery") }}</v-btn>
 			<v-btn :to="localePath('contact')" class="mx-3">{{ $t("pages.contact") }}</v-btn>
@@ -78,7 +78,7 @@ export default defineComponent({
 	}
 })
 </script>
-<style>
+<style lang="scss">
 .app-bar {
 	.toolbar-title {
 		text-decoration: none;
@@ -87,6 +87,17 @@ export default defineComponent({
 
 	.english-font {
 		font-family: Audiowide;
+	}
+	.toolbar-items{
+		.v-btn.v-btn--active {
+			background: black;
+			.v-btn__overlay, .v-btn__underlay {
+				display: none;
+			}
+			.v-btn__content {
+				color: white;
+			}
+		}
 	}
 }
 </style>

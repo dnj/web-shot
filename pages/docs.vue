@@ -1,5 +1,5 @@
 <template>
-    <div class="contact-header py-6 mb-5">
+    <div class="pages-header py-6 mb-5">
         <v-container>
             <h1>{{ $t("documents.title") }}</h1>
         </v-container>
@@ -14,7 +14,7 @@
                         <template v-slot:append-inner>
                             <v-btn color="primary" elevation="0" :href="getCaptureURL(inputData.url)" target="_blank"
                                 class="rounded-sm px-sm-5 px-2"><v-icon class="me-2" icon="mdi-camera"></v-icon>{{
-                                    $t("documents.btn") }}</v-btn>
+                                $t("documents.btn") }}</v-btn>
                         </template>
                     </v-text-field>
                 </v-col>

@@ -48,6 +48,10 @@ export default defineComponent({
         }
     }
 
+    .v-btn--active>.v-btn__overlay {
+        --v-activated-opacity: 0;
+    }
+
 }
 
 .footer-top {
@@ -67,5 +71,7 @@ export default defineComponent({
     color: rgb(var(--v-theme-secondary));
     font-size: 32px;
     line-height: 40px;
+
+
 }
 </style>
