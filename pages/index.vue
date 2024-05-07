@@ -19,7 +19,7 @@
 		<v-row>
 			<v-col md="4" cols="12">
 				<div class="text-cardTitleGray mb-1">{{ $t("index.api-card.browser-options.title") }}</div>
-				<div class="py-5 px-3 cards">
+				<div class="py-5 px-4 cards">
 					<div>{{ $t("api.options.resolution") }}</div>
 					<v-row>
 						<v-col cols="8" class="pe-0">
@@ -89,7 +89,7 @@
 			</v-col>
 			<v-col md="8" cols="12">
 				<div class="text-cardTitleGray mb-1">{{ $t("index.api-card.screenshot-api.title") }}</div>
-				<div class="px-3 px-sm-5 py-3 py-sm-7 cards">
+				<div class="px-3 px-sm-5 py-3 py-sm-5 cards">
 					<div class="api-box pt-3">
 						<div class="api-box-header ">
 							<v-row dir="ltr">
@@ -290,22 +290,22 @@ export default defineComponent({
 }
 
 .cards {
-	border: 3px solid rgb(var(--v-theme-borderGray));
+	box-shadow: 0px 0px 8px 0px rgba(var(--v-theme-shadowGray), 0.08);
 	border-radius: 20px;
 	background-color: white;
 	font-size: 14px;
 }
 
 .api-box {
-	border: 3px solid rgb(var(--v-theme-borderGray));
+	border: 3px solid rgba(var(--v-theme-shadowGray), 0.06);
 	border-radius: 15px;
 
 	.api-box-header {
-		border-bottom: 3px solid rgb(var(--v-theme-borderGray));
+		border-bottom: 3px solid rgba(var(--v-theme-shadowGray), 0.06);
 
 		.circle {
 			border-radius: 50%;
-			border: 3.5px solid rgb(var(--v-theme-borderGray));
+			border: 3.5px solid rgba(var(--v-theme-shadowGray), 0.06);
 			width: 22px;
 			height: 22px;
 			display: inline-block;
@@ -338,20 +338,20 @@ export default defineComponent({
 
 .home-content {
 	.title-of-content {
-		font-size: 16px;
+		font-size: 18px;
 		font-weight: 800;
 	}
 
 	.code-background {
 		background-color: rgb(var(--v-theme-secondary));
-		border: 3px solid rgb(var(--v-theme-borderGray));
-		border-radius: 15px;
+		border-radius: 10px;
 		color: rgb(var(--v-theme-codeText));
 		font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 		font-size: 14px;
 		white-space: nowrap;
 		overflow-x: auto;
 		text-overflow: ellipsis;
+		box-shadow: 0px 0px 8px 0px rgba(var(--v-theme-shadowGray),0.08);
 	}
 }
 
