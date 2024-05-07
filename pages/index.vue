@@ -7,7 +7,7 @@
 				<v-text-field variant="outlined" dir="ltr" v-model="inputData.url" class="px-0">
 					<template v-slot:append-inner>
 						<v-btn color="primary" height="100%" elevation="0"
-							class="rounded-sm px-sm-5 px-2 text-secondary" @click="onSubmit"><v-icon class="me-2"
+							class="rounded-sm px-sm-5 px-2" @click="onSubmit"><v-icon class="me-2"
 								icon="mdi-camera"></v-icon>{{
 							$t("index.banner.capture") }}</v-btn>
 					</template>
@@ -361,6 +361,9 @@ export default defineComponent({
 	--v-input-control-height: 0px;
 	--v-field-padding-start: 20px;
 }
+.v-field--appended {
+	padding-inline-end: 0px;
+}
 
 .v-input.v-textarea>.v-input__control>.v-input__slot:before {
 	border: none;
@@ -374,10 +377,7 @@ export default defineComponent({
 		--v-field-padding-end: 1px;
 		--v-field-input-padding-top: 2px;
 		--v-field-input-padding-bottom: 0px;
-		text-align: center;
 		font-size: 13px;
-
-
 	}
 
 	.v-input__details {

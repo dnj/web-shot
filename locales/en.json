@@ -22,7 +22,7 @@
     "documents.title": "API documentation",
     "documents.subtitle": "Give it a go!",
     "documents.content": "Image modification options can be sent along with the website address in an url. Below is a complete list of options:",
-    "documents.btn": "Capture Image",
+    "documents.btn": "Capture",
     "documents.options.title": "Full list of options",
     "documents.options.table.header.name": "Name",
     "documents.options.table.header.type": "Type",
