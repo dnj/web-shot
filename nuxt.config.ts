@@ -17,31 +17,43 @@ export default defineNuxtConfig({
       })
     },
     '@nuxtjs/i18n',
-    //...
+    ['nuxt-mail', {
+      message: {
+        to: 'hi@web-shot.ir',
+      },
+      smtp: {
+        host: "mail.jeyserver.com",
+        port: 587,
+        auth: {
+          user: 'hi@web-shot.ir',
+          pass: process.env.SMTP_PASSWORD,
+        },
+      },
+    }],
   ],
   i18n: {
     vueI18n: './i18n.config.ts',
     locales: ['en', 'fa'],
     defaultLocale: 'en',
-},
+  },
   vite: {
-  vue: {
-    template: {
-      transformAssetUrls,
+    vue: {
+      template: {
+        transformAssetUrls,
+      },
     },
   },
-},
   nitro: {
-  storage: {
-    captures: {
-      driver: 'fs',
-      base: './.data/captures'
+    storage: {
+      captures: {
+        driver: 'fs',
+        base: './.data/captures'
+      }
+    },
+    rollupConfig: {
+      plugins: [
+        image()
+      ]
     }
-  },
-  rollupConfig: {
-    plugins: [
-      image()
-    ]
   }
-}
 })

@@ -6,10 +6,9 @@
 			<v-col md="8" sm="10" cols="12">
 				<v-text-field variant="outlined" dir="ltr" v-model="inputData.url" class="px-0">
 					<template v-slot:append-inner>
-						<v-btn color="primary" height="100%" elevation="0"
-							class="rounded-sm px-sm-5 px-2" @click="onSubmit"><v-icon class="me-2"
-								icon="mdi-camera"></v-icon>{{
-							$t("index.banner.capture") }}</v-btn>
+						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-sm-5 px-2"
+							@click="onSubmit"><v-icon class="me-2" icon="mdi-camera"></v-icon>{{
+								$t("index.banner.capture") }}</v-btn>
 					</template>
 				</v-text-field>
 			</v-col>
@@ -141,7 +140,7 @@
 			<div>{{ $t("index.options.code-explanation") }}</div>
 			<v-btn color="primary" :to="localePath('docs')" height="43px" class="px-10 mt-8"
 				:append-icon="$vuetify.locale.isRtl ? 'mdi-arrow-left' : 'mdi-arrow-right'">{{
-				$t("index.options.button") }}</v-btn>
+					$t("index.options.button") }}</v-btn>
 		</div>
 	</v-container>
 </template>
@@ -250,9 +249,9 @@ export default defineComponent({
 			}
 			return true;
 		},
-		setCustomResolution(){
-			this.inputData.viewportWidth = this.customResolution.substring(0,this.customResolution.indexOf("-"));
-			this.inputData.viewportHeight = this.customResolution.substring(this.customResolution.indexOf("-")+1,this.customResolution.length);
+		setCustomResolution() {
+			this.inputData.viewportWidth = this.customResolution.substring(0, this.customResolution.indexOf("-"));
+			this.inputData.viewportHeight = this.customResolution.substring(this.customResolution.indexOf("-") + 1, this.customResolution.length);
 		}
 	},
 	computed: {
@@ -294,6 +293,10 @@ export default defineComponent({
 	border-radius: 20px;
 	background-color: white;
 	font-size: 14px;
+
+	.v-field__input {
+		text-align: center;
+	}
 }
 
 .api-box {
@@ -351,7 +354,7 @@ export default defineComponent({
 		white-space: nowrap;
 		overflow-x: auto;
 		text-overflow: ellipsis;
-		box-shadow: 0px 0px 8px 0px rgba(var(--v-theme-shadowGray),0.08);
+		box-shadow: 0px 0px 8px 0px rgba(var(--v-theme-shadowGray), 0.08);
 	}
 }
 
@@ -361,6 +364,7 @@ export default defineComponent({
 	--v-input-control-height: 0px;
 	--v-field-padding-start: 20px;
 }
+
 .v-field--appended {
 	padding-inline-end: 0px;
 }

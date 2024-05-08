@@ -40,20 +40,29 @@
                     <div class="mt-4">{{ $t("contact.form.message") }}<span class="text-red"> *</span></div>
                     <v-textarea variant="outlined" v-model="message" :rules="[messageValidation]"></v-textarea>
                     <v-btn type="submit" color="customGreen" class="text-secondary mt-4" elevation="0"
-                        :disabled="!valid"><v-icon class="mb-1 me-1"
+                        :disabled="!valid" :loading="loading"><v-icon class="mb-1 me-1"
                             :class="$vuetify.locale.isRtl ? 'send-btn-icon-rtl' : 'send-btn-icon-ltr'" size="small"
                             icon="mdi-send"></v-icon>{{
                         $t("contact.form.button") }}</v-btn>
                 </v-form>
+                <v-alert closable class="mt-5" v-if="sentSuccessfully" :text="$t('contact.email.sent-successfully')"
+                    type="success" variant="tonal"></v-alert>
+                <v-alert closable class="mt-5" v-if="didNotSent" :text="$t('contact.email.not-sent')" type="error"
+                    variant="tonal"></v-alert>
             </v-col>
         </v-row>
     </v-container>
 </template>
 <script lang="ts">
 import TelegramIcon from '~/components/TelegramIcon.vue';
+
 export default defineComponent({
     components: {
         TelegramIcon
+    },
+    setup() {
+        const mail = useMail();
+        return { mail };
     },
     data() {
         return {
@@ -61,28 +70,50 @@ export default defineComponent({
             name: '',
             email: '',
             message: '',
+            loading: false,
+            sentSuccessfully: false,
+            didNotSent: false,
         }
     },
     methods: {
-        onSubmit() { },
+        async onSubmit() {
+            this.loading = true;
+            this.sentSuccessfully = false;
+            this.didNotSent = false;
+            try {
+                await this.mail.send({
+                    from: `${this.name} <${this.email}>`,
+                    subject: this.$t("contact.email.subject"),
+                    text: this.message,
+                })
+                this.sentSuccessfully = true;
+            }
+            catch(e) {
+                this.didNotSent = true;
+            }
+            finally {
+                this.loading = false;
+            }
+            
+         },
         emailValidation(value: string): boolean | string {
             if (!value) {
-                return "email required";
+                return this.$t("contact.form.error.email");
             }
             if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value)) {
-                return "invalid email";
+                return this.$t("contact.form.error.invalid.email");
             }
             return true;
         },
         nameValidation(value: string): boolean | string {
             if (!value) {
-                return "name required";
+                return this.$t("contact.form.error.full-name");
             }
             return true;
         },
         messageValidation(value: string): boolean | string {
             if (!value) {
-                return "message required";
+                return this.$t("contact.form.error.message");
             }
             return true;
         }
