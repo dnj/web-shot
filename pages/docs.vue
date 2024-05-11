@@ -12,7 +12,7 @@
                 <v-col md="9" cols="12">
                     <v-text-field variant="outlined" dir="ltr" v-model="url" class="my-5">
                         <template v-slot:append-inner>
-                            <v-btn color="primary" elevation="0" :href="getCaptureURL(inputData.url)" target="_blank"
+                            <v-btn color="primary" elevation="0" @click="onSubmit"
                                 class="rounded-sm px-sm-5 px-2"><v-icon class="me-2" icon="mdi-camera"></v-icon>{{
                                 $t("documents.btn") }}</v-btn>
                         </template>
@@ -62,14 +62,14 @@ interface IData {
 
 interface IInput {
     url: string,
-    width: number,
-    height: number,
-    maxAge: number,
+    width: string,
+    height: string,
+    maxAge: string,
     format: string,
-    fullpage: boolean,
-    timeout: number,
-    viewportWidth: number,
-    viewportHeight: number
+    fullpage: string,
+    timeout: string,
+    viewportWidth: string,
+    viewportHeight: string
 }
 
 export default defineComponent({
@@ -93,15 +93,20 @@ export default defineComponent({
             ],
             inputData: {
                 url: 'https://www.google.com',
-                width: 1200,
-                height: 600,
-                maxAge: 86400,
+                width: '1200',
+                height: '600',
+                maxAge: '86400',
                 format: 'jpeg',
-                fullpage: false,
-                timeout: 10000,
-                viewportWidth: 1200,
-                viewportHeight: 600
+                fullpage: 'false',
+                timeout: '10000',
+                viewportWidth: '1200',
+                viewportHeight: '600'
             } as IInput
+        }
+    },
+    methods:{
+        onSubmit(){
+            window.open(this.url, "_blank")
         }
     },
     computed: {
@@ -182,32 +187,16 @@ export default defineComponent({
             ]
         },
         url(): string {
-            let params = {}
-            if (this.inputData.width != 1200) {
-                params = Object.assign(params, { width: this.inputData.width })
-            }
-            if (this.inputData.height != 600) {
-                params = Object.assign(params, { height: this.inputData.height })
-            }
-            if (this.inputData.maxAge != 86400 && this.inputData.maxAge > 9) {
-                params = Object.assign(params, { maxAge: this.inputData.maxAge })
-            }
-            if (this.inputData.format === "png") {
-                params = Object.assign(params, { format: this.inputData.format })
-            }
-            if (this.inputData.fullpage === true) {
-                params = Object.assign(params, { fullpage: this.inputData.fullpage })
-            }
-            if (this.inputData.timeout != 10000 && 2000 <= this.inputData.timeout && this.inputData.timeout <= 15000) {
-                params = Object.assign(params, { timeout: this.inputData.timeout })
-            }
-            if (this.inputData.viewportWidth != 1200 && 320 <= this.inputData.viewportWidth && this.inputData.viewportWidth <= 4096) {
-                params = Object.assign(params, { viewportWidth: this.inputData.viewportWidth })
-            }
-            if (this.inputData.viewportHeight != 600 && 320 <= this.inputData.viewportHeight && this.inputData.viewportHeight <= 4096) {
-                params = Object.assign(params, { viewportHeight: this.inputData.viewportHeight })
-            }
-            return getCaptureURL(this.inputData.url, params)
+            return getCaptureURL(this.inputData.url, {
+                width: this.inputData.width,
+                height: this.inputData.height,
+                maxAge: this.inputData.maxAge,
+                format: this.inputData.format,
+                fullpage: this.inputData.fullpage,
+                timeout: this.inputData.timeout,
+                viewportWidth: this.inputData.viewportWidth,
+                viewportHeight: this.inputData.viewportHeight
+            })
         }
     }
 })
