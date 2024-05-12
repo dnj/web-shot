@@ -41,6 +41,7 @@
     "documents.options.table.content.description.timeout": "مدت زمان انتظار بعد از بارگزاری صفحه و تهیه تصویر بعد از این زمان (حداقل: 2000 و حداکثر: 15000)",
     "documents.options.table.content.description.viewportWidth": "تصویر صفحه وب سایت در عرض مشخص شده ذخیره خواهد شد (حداقل: 320 و حداکثر: 4096)",
     "documents.options.table.content.description.viewportHeight": "تصویر صفحه وب سایت در ارتفاع مشخص شده ذخیره خواهد شد (حداقل: 320 و حداکثر: 4096)",
+    "documents.options.table.content.input-lable.fullpage": "تمام صفحه",
     "gallery.title": "گالری تصاویر",
     "gallery.subtitle": "نگاهی به تصاویر وب شات از {count} وب سایت برتر بیاندازید! رابط برنامه نویسی ما تصاویری با کیفیت بالا را دریافت می کند و آنها را بر روی یک زیر ساخت شبکه نگهداری می کند تا در سریع ترین زمان آنها را تحویل دهد.",
     "contact.title": "تماس با ما",

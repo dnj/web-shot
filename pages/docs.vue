@@ -11,10 +11,15 @@
             <v-row class="capture-url">
                 <v-col md="9" cols="12">
                     <v-text-field variant="outlined" dir="ltr" v-model="url" class="my-5">
-                        <template v-slot:append-inner>
+                        <template v-if="!$vuetify.locale.isRtl" v-slot:append-inner>
                             <v-btn color="primary" elevation="0" @click="onSubmit"
                                 class="rounded-sm px-sm-5 px-2"><v-icon class="me-2" icon="mdi-camera"></v-icon>{{
-                                $t("documents.btn") }}</v-btn>
+                                    $t("documents.btn") }}</v-btn>
+                        </template>
+                        <template v-if="$vuetify.locale.isRtl" v-slot:prepend-inner>
+                            <v-btn color="primary" elevation="0" @click="onSubmit"
+                                class="rounded-sm px-sm-5 px-2"><v-icon class="me-2" icon="mdi-camera"></v-icon>{{
+                                    $t("documents.btn") }}</v-btn>
                         </template>
                     </v-text-field>
                 </v-col>
@@ -26,10 +31,11 @@
                     <v-icon v-if="!value" color="red" icon="mdi-close-thick"></v-icon>
                 </template>
                 <template v-slot:item.value="{ item }">
-                    <v-text-field variant="outlined" v-model="inputData[item.name]"
+                    <v-text-field dir="ltr" variant="outlined" v-model="inputData[item.name]"
                         v-if="['url', 'width', 'height', 'maxAge', 'timeout', 'viewportWidth', 'viewportHeight'].includes(item.name)"></v-text-field>
-                    <v-checkbox class="my-2 checkbox" label="Yes" v-if="item.name === 'fullpage'"
-                        v-model="inputData.fullpage"></v-checkbox>
+                    <v-checkbox class="my-2 checkbox"
+                        :label="$t('documents.options.table.content.input-lable.fullpage')"
+                        v-if="item.name === 'fullpage'" v-model="inputData.fullpage"></v-checkbox>
                     <v-radio-group class="radiogroup" v-if="item.name === 'format'" v-model="inputData.format">
                         <v-row>
                             <v-col md="6" cols="12">
@@ -104,8 +110,8 @@ export default defineComponent({
             } as IInput
         }
     },
-    methods:{
-        onSubmit(){
+    methods: {
+        onSubmit() {
             window.open(this.url, "_blank")
         }
     },
@@ -236,7 +242,10 @@ export default defineComponent({
 
     .v-field--appended {
         padding-inline-end: 0px;
+    }
 
+    .v-field--prepended {
+        padding-inline-start: 0px;
     }
 
     .v-data-table-footer {
@@ -246,6 +255,7 @@ export default defineComponent({
     .v-table {
         box-shadow: 0px 0px 8px 0px rgba(var(--v-theme-shadowGray), 0.08);
         --v-border-opacity: 0;
+
         .v-table__wrapper>table>tbody>tr>td:last-child {
             min-width: 120px;
         }

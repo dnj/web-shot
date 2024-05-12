@@ -41,6 +41,7 @@
     "documents.options.table.content.description.timeout": "The max time in ms to wait for the page to load. Min 2000, Max 15000.",
     "documents.options.table.content.description.viewportWidth": "The page width in pixel. Min 320, Max 4096.",
     "documents.options.table.content.description.viewportHeight": "The page height in pixel. Min 320, Max 4096.",
+    "documents.options.table.content.input-lable.fullpage": "Yes",
     "gallery.title": "Gallery",
     "gallery.subtitle": "Take a look at webshot images from {count} top websites. Our API provides high quality images and stores them on a network infrastructure to deliver them as quickly as possible.",
     "contact.title": "Contact Us",
