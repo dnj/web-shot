@@ -5,10 +5,15 @@
 		<v-row justify="center" class="mt-5">
 			<v-col md="8" sm="10" cols="12">
 				<v-text-field variant="outlined" dir="ltr" v-model="inputData.url" class="px-0">
-					<template v-slot:append-inner>
+					<template v-if="!$vuetify.locale.isRtl" v-slot:append-inner>
 						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-sm-5 px-2"
 							@click="onSubmit"><v-icon class="me-2" icon="mdi-camera"></v-icon>{{
-								$t("index.banner.capture") }}</v-btn>
+							$t("index.banner.capture") }}</v-btn>
+					</template>
+					<template v-if="$vuetify.locale.isRtl" v-slot:prepend-inner>
+						<v-btn color="primary" height="100%" elevation="0" class="rounded-sm px-sm-5 px-2"
+							@click="onSubmit"><v-icon class="me-2" icon="mdi-camera"></v-icon>{{
+							$t("index.banner.capture") }}</v-btn>
 					</template>
 				</v-text-field>
 			</v-col>
@@ -84,21 +89,27 @@
 					</v-row>
 					<div class="mb-2 mt-4">{{ $t("api.options.format") }}</div>
 					<v-select :items="formatOptios" variant="outlined" v-model="inputData.format"></v-select>
+					<div class="text-center" v-if="$vuetify.display.smAndDown">
+						<v-btn color="primary" elevation="0" class="rounded-md my-3" @click="onSubmit"><v-icon
+								class="me-2" icon="mdi-camera"></v-icon>{{
+							$t("index.banner.capture") }}</v-btn>
+					</div>
+
 				</div>
 			</v-col>
 			<v-col md="8" cols="12">
-				<div class="text-cardTitleGray mb-1">{{ $t("index.api-card.screenshot-api.title") }}</div>
+				<div class="text-cardTitleGray mb-1 mt-md-0 mt-4">{{ $t("index.api-card.screenshot-api.title") }}</div>
 				<div class="px-3 px-sm-5 py-3 py-sm-5 cards">
 					<div class="api-box pt-3">
 						<div class="api-box-header ">
 							<v-row dir="ltr">
-								<v-col lg="2" sm="3" cols="5" class="pe-0 py-3">
-									<div v-for="i in 3" class="circle ms-3"></div>
+								<v-col lg="2" sm="3" cols="4" class="pe-0 py-3">
+									<div v-for="i in $vuetify.display.xs ? 2 : 3" class="circle ms-3"></div>
 								</v-col>
-								<v-col v-if="captures.length > 0 && error === false && $vuetify.display.smAndUp" lg="10"
-									sm="9" cols="7" class="py-3 pe-8">
+								<v-col v-if="captures.length > 0 && error === false" lg="10" sm="9" cols="8"
+									class="py-3 ps-0">
 									<div class="url">
-										<a :href="url">{{ url }}</a>
+										<a :href="capturedUrl">{{ capturedUrl }}</a>
 									</div>
 								</v-col>
 							</v-row>
@@ -111,13 +122,8 @@
 								:width="captures.length > 0 ? $vuetify.display.smAndUp ? 470 : 200 : 150"
 								:height="captures.length > 0 ? $vuetify.display.smAndUp ? 235 : 100 : 75" />
 							<div v-if="captures.length > 0 && error === false" class="mt-5">
-								<v-tooltip :text="url" location="top">
-									<template v-slot:activator="{ props }">
-										<v-btn v-bind="props" width="10px" color="blueText" class="me-1"><v-icon
-												icon="mdi-link-variant"></v-icon></v-btn>
-									</template>
-								</v-tooltip>
-								<v-btn prepend-icon="mdi-download" :href="url" color="primary" width="140px">{{
+								<v-btn prepend-icon="mdi-download" :href="capturedUrl" target="_blank" color="primary"
+									width="140px">{{
 									$t("index.api-card.download-image.button") }}</v-btn>
 							</div>
 
@@ -140,7 +146,7 @@
 			<div>{{ $t("index.options.code-explanation") }}</div>
 			<v-btn color="primary" :to="localePath('docs')" height="43px" class="px-10 mt-8"
 				:append-icon="$vuetify.locale.isRtl ? 'mdi-arrow-left' : 'mdi-arrow-right'">{{
-					$t("index.options.button") }}</v-btn>
+				$t("index.options.button") }}</v-btn>
 		</div>
 	</v-container>
 </template>
@@ -187,6 +193,7 @@ export default defineComponent({
 		return {
 			title: this.$t("pages.index"),
 			error: false,
+			capturedUrl: '',
 			captures: [] as IImage[],
 			customResolutionStatus: false,
 			customResolution: '',
@@ -227,6 +234,7 @@ export default defineComponent({
 				url: this.url,
 				date: new Date(),
 			}];
+			this.capturedUrl = this.url;
 		},
 		setResolution() {
 			this.inputData.viewportWidth = this.selectedResolution.viewportWidth;
@@ -285,6 +293,9 @@ export default defineComponent({
 		.v-field--appended {
 			padding-inline-end: 0px;
 		}
+		.v-field--prepended {
+			padding-inline-start: 0px;
+		}
 	}
 }
 
@@ -293,6 +304,7 @@ export default defineComponent({
 	border-radius: 20px;
 	background-color: white;
 	font-size: 14px;
+
 
 	.v-field__input {
 		text-align: center;
@@ -363,10 +375,6 @@ export default defineComponent({
 	--v-field-input-padding-bottom: 8px;
 	--v-input-control-height: 0px;
 	--v-field-padding-start: 20px;
-}
-
-.v-field--appended {
-	padding-inline-end: 0px;
 }
 
 .v-input.v-textarea>.v-input__control>.v-input__slot:before {
