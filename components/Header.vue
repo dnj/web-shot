@@ -17,7 +17,7 @@
 					{{ $vuetify.display.smAndUp ? currentLang.title : currentLang.title.slice(0, 2) }}
 				</v-btn>
 			</template>
-			<v-list :elevation="3">
+			<v-list :elevation="3" class="mt-2">
 				<v-list-item v-for="(language, i) in getOtherLanguages(locale)" :key="i" :value="language.value"
 					:to="switchLocalePath(language.value)">
 					<template v-slot:append>
@@ -31,7 +31,7 @@
 			<template v-slot:activator="{ props }">
 				<v-app-bar-nav-icon class="hidden-md-and-up mx-0" v-bind="props"></v-app-bar-nav-icon>
 			</template>
-			<v-list>
+			<v-list class="mt-2">
 				<v-list-item>
 					<v-btn variant="text" :to="localePath('docs')" v-text="$t('pages.docs')" />
 				</v-list-item>
@@ -79,7 +79,12 @@ export default defineComponent({
 })
 </script>
 <style lang="scss">
+.v-btn {
+	letter-spacing: 0px;
+}
+
 .app-bar {
+
 	.toolbar-title {
 		text-decoration: none;
 		color: black;
@@ -88,12 +93,16 @@ export default defineComponent({
 	.english-font {
 		font-family: Audiowide;
 	}
-	.toolbar-items{
+
+	.toolbar-items {
 		.v-btn.v-btn--active {
 			background: black;
-			.v-btn__overlay, .v-btn__underlay {
+
+			.v-btn__overlay,
+			.v-btn__underlay {
 				display: none;
 			}
+
 			.v-btn__content {
 				color: white;
 			}
