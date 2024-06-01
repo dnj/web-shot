@@ -1,41 +1,77 @@
 <template>
+    <div class="footer-top text-center">
+        <div class="footer-line">
+            <NuxtLink :to="localePath('/')" class="footer-title">
+                <div>Web Shot</div>
+            </NuxtLink>
+            <div class="text-secondary">{{ $t("index.banner.title") }}</div>
+        </div>
+    </div>
     <v-container class="footer">
-        <v-divider class="mb-5"></v-divider>
         <v-row>
-            <v-col sm="6" cols="12"
+            <v-col md="6" cols="12" class="py-2"
                 :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'right' : 'left'">
-                <img src="~/assets/images/logo.png" />
+                <v-btn class="mx-1" :to="localePath('docs')" variant="text" prepend-icon="mdi-circle-medium">{{
+                    $t("pages.docs") }}</v-btn>
+                <v-btn class="mx-1" :to="localePath('gallery')" variant="text" prepend-icon="mdi-circle-medium">{{
+                    $t("pages.gallery") }}</v-btn>
+                <v-btn class="mx-1" :to="localePath('contact')" variant="text" prepend-icon="mdi-circle-medium">{{
+                    $t("pages.contact") }}</v-btn>
             </v-col>
-            <v-col sm="6" cols="12"
+            <v-col md="6" cols="12" class="py-2"
                 :align="$vuetify.display.mobile ? 'center' : $vuetify.locale.isRtl ? 'left' : 'right'">
-                <v-btn class="mx-1" :to="localePath('docs')" variant="text">{{ $t("pages.docs") }}</v-btn>
-                <v-btn class="mx-1" :to="localePath('gallery')" variant="text">{{ $t("pages.gallery") }}</v-btn>
-                <v-btn class="mx-1" :to="localePath('contact')" variant="text">{{ $t("pages.contact") }}</v-btn>
+                <div class="footer-sen">&copy; {{ $t("copy-right") }}</div>
             </v-col>
         </v-row>
-        <v-divider class="my-5"></v-divider>
-        <div class="footer-sen">&copy; {{ $t("copy-right") }}</div>
+
     </v-container>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 export default defineComponent({
-    setup(){
+    setup() {
         return { localePath: useLocalePath() };
     }
 })
 </script>
 <style lang="scss">
 .footer {
-    .footer-sen {
-        margin-top: 15px;
-        margin-bottom: 15px;
-        color: #707981;
+    .v-btn__prepend {
+        margin: 0px;
     }
 
-    @media(max-width:450px) {
-        padding-left: 0px;
-        padding-right: 0px;
+    @media(max-width: 750px) {
+
+        .v-btn {
+            width: 88px;
+            font-size: 13px;
+        }
     }
+
+    .v-btn--active>.v-btn__overlay {
+        --v-activated-opacity: 0;
+    }
+
+}
+
+.footer-top {
+    background-color: rgb(var(--v-theme-primary));
+    height: 135px;
+    padding-top: 25px;
+
+    .footer-line {
+        background-image: url("~/assets/images/footer.svg");
+        height: 120px;
+    }
+}
+
+.footer-title {
+    text-decoration: none;
+    font-family: Audiowide;
+    color: rgb(var(--v-theme-secondary));
+    font-size: 32px;
+    line-height: 40px;
+
+
 }
 </style>

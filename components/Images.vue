@@ -1,7 +1,7 @@
 <template>
     <div v-if="images && !error" class="my-2" justify="center">
         <a v-for="(image, i) in images" :key="getId(image, i)" :href="image.url" target="_blank">
-            <img :src="getImageURL(image)" :width="width" :height="height"></img>
+            <img class="image-card mx-1" :src="getImageURL(image)" :width="width" :height="height"></img>
         </a>
     </div>
     <v-alert class="my-5 text-start" v-if="error" :text="$t('fetch-data.error.server')" type="error" variant="tonal"
@@ -51,7 +51,7 @@ export default defineComponent({
             }
             return `${url}?${q}`;
         },
-        getId(image: IImage, index: number): number|string {
+        getId(image: IImage, index: number): number | string {
             if (image.id !== undefined) {
                 return `id-${image.id}`;
             }
@@ -64,3 +64,9 @@ export default defineComponent({
     }
 })
 </script>
+<style>
+.image-card {
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+}
+</style>

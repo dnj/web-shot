@@ -10,8 +10,8 @@ export function getCaptureURL(url: string, query?: Record<string, string>): stri
         viewportHeight: "600"
     };
     if (query !== undefined) {
-        for(const key in defaultQuery){
-            if(query[key] === defaultQuery[key]){
+        for (const key in defaultQuery) {            
+            if (query[key]?.toString() === defaultQuery[key]) {
                 delete query[key];
             }
         }

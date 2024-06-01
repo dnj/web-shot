@@ -10,14 +10,18 @@ export default defineNuxtPlugin((app) => {
 			themes: {
 				light: {
 					colors: {
-						primary: "#007bff",
-						secondary: "#6c767e",
+						primary: "#000000",
+						secondary: "#ffffff",
+						textGray: "#555555",
+						shadowGray: "#22222214",
 						titleGray: "#6c757d",
+						cardTitleGray: "#959595",
 						subtitleGray: "#6e7880",
 						contentGray: "#7c848b",
-						backgroundGray: "#ecf0f1",
 						codeText: "7b8a8b",
-						background:"#fafafa"
+						background:"#fafafa",
+						blueText: "#0277BD",
+						customGreen: "#67E893",
 					},
 				},
 			},

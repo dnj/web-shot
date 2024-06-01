@@ -1,7 +1,11 @@
 <template>
+    <div class="pages-header py-6 mb-5">
+        <v-container>
+            <h1>{{ $t("gallery.title") }}</h1>
+        </v-container>
+    </div>
     <v-container class="gallery mb-15">
-        <h1 class="gallery-title">{{ $t("gallery.title") }}</h1>
-        <p class="gallery-content" v-text="$t('gallery.subtitle', {count: images.length})" />
+        <p class="mb-8" v-text="$t('gallery.subtitle', {count: images.length})" />
         <Images :images="images" :error="error" />
     </v-container>
 </template>
@@ -39,17 +43,3 @@ export default defineComponent({
     },
 })
 </script>
-<style lang="scss">
-.gallery {
-    .gallery-title {
-        color: rgb(var(--v-theme-titleGray));
-        font-weight: 900;
-        font-size: 35px;
-    }
-
-    .gallery-content {
-        color: rgb(var(--v-theme-contentGray));
-        padding: 1em 0;
-    }
-}
-</style>
