@@ -8,7 +8,7 @@
         <v-row>
             <v-col md="6" cols="12" class="px-sm-12 px-5">
                 <div class="title mt-4 mb-6 text-textGray">{{ $t("contact.sub-title") }}</div>
-                <div>{{ $t("contact.content") }}</div>
+                <div v-html="$t('contact.content')" />
                 <v-row class="mb-3 mt-10">
                     <v-col cols="1"><v-icon icon="mdi-github" size="x-large"></v-icon></v-col>
                     <v-col cols="11" class="px-6">
