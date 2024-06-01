@@ -231,7 +231,7 @@ export default defineComponent({
 	methods: {
 		async onSubmit() {
 			this.captures = [{
-				url: this.url,
+				url: this.inputData.url,
 				date: new Date(),
 			}];
 			this.capturedUrl = this.url;
