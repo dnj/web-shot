@@ -8,26 +8,8 @@
         <v-row>
             <v-col md="6" cols="12" class="px-sm-12 px-5">
                 <div class="title mt-4 mb-6 text-textGray">{{ $t("contact.sub-title") }}</div>
-                <div v-html="$t('contact.content')" />
-                <v-row class="mb-3 mt-10">
-                    <v-col cols="1"><v-icon icon="mdi-github" size="x-large"></v-icon></v-col>
-                    <v-col cols="11" class="px-6">
-                        <div>{{ $t("contact.link.github") }}</div>
-                        <a href="https://github.com/dnj/web-shot" target="_blank" dir="ltr"
-                            class="text-decoration-none text-blueText">https://github.com/dnj/web-shot</a>
-                    </v-col>
-                </v-row>
-                <v-divider :thickness="2"></v-divider>
-                <v-row class="my-3">
-                    <v-col cols="1">
-                        <TelegramIcon />
-                    </v-col>
-                    <v-col cols="11" class="px-6">
-                        <div>{{ $t("contact.link.telegram") }}</div>
-                        <a href="https://t.me/dnjco" target="_blank" dir="ltr"
-                            class="text-decoration-none text-blueText">@dnjco</a>
-                    </v-col>
-                </v-row>
+                <ContactContentFa v-if="useI18n().locale.value == 'fa'" />
+                <ContactContentEn v-if="useI18n().locale.value == 'en'" />
             </v-col>
             <v-col md="6" cols="12" class="px-sm-12 px-5">
                 <div class="title mt-4 mb-6 text-textGray">{{ $t("contact.form.title") }}</div>
@@ -55,14 +37,19 @@
 </template>
 <script lang="ts">
 import TelegramIcon from '~/components/TelegramIcon.vue';
+import ContactContentFa from '~/components/ContactContentFa.vue';
+import ContactContentEn from '~/components/ContactContentEn.vue';
+import { useI18n } from '#imports';
 
 export default defineComponent({
     components: {
-        TelegramIcon
+        TelegramIcon,
+        ContactContentFa,
+        ContactContentEn
     },
     setup() {
         const mail = useMail();
-        return { mail };
+        return { mail, useI18n };
     },
     data() {
         return {
