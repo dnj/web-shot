@@ -1,7 +1,7 @@
 ## Web-Shot:  A Blazing Fast Screenshot Service
 
 <p align="center">
-    <img src="styles/pics/logo.png">
+    <img src="assets/images/logo.png">
 </p>
 
 Web-Shot is a high-performance online screenshot service that lets you capture any webpage with ease. 
